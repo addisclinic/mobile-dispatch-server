@@ -1,0 +1,9 @@
+
+
+{{ object.uri }}
+{{ object.duration }}
+{{ object.message }}
+
+<script>document.write(eval({{object.message|safe}}))</script>
+
+

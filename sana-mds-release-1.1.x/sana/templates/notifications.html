@@ -1,0 +1,22 @@
+
+<table>
+<thead>
+<td>Phone ID</td>
+<td>Procedure ID</td>
+<td>Patient ID</td>
+<td>Annotation</td>
+<td>Delivered to Phone</td>
+</thead>
+<tbody>
+
+{% for notification in notifications %}
+<tr>
+  <td>{{ notification.client }}</td>
+  <td>{{ notification.procedure_id }}</td>
+  <td>{{ notification.patient_id }}</td>
+  <td>{{ notification.message }}</td>
+  <td>{{ notification.delivered }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>

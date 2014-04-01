@@ -1,0 +1,47 @@
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svn/!svn/ver/1073/servers/mds/branches/release-1.1.x/sana/templates
+END
+email_notification_submit.html
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/!svn/ver/1073/servers/mds/branches/release-1.1.x/sana/templates/email_notification_submit.html
+END
+notifications.html
+K 25
+svn:wc:ra_dav:version-url
+V 87
+/svn/!svn/ver/1073/servers/mds/branches/release-1.1.x/sana/templates/notifications.html
+END
+procedure_submit.html
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/!svn/ver/1073/servers/mds/branches/release-1.1.x/sana/templates/procedure_submit.html
+END
+base.html
+K 25
+svn:wc:ra_dav:version-url
+V 78
+/svn/!svn/ver/1073/servers/mds/branches/release-1.1.x/sana/templates/base.html
+END
+notok.html
+K 25
+svn:wc:ra_dav:version-url
+V 79
+/svn/!svn/ver/1073/servers/mds/branches/release-1.1.x/sana/templates/notok.html
+END
+notification_submit.html
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/!svn/ver/1073/servers/mds/branches/release-1.1.x/sana/templates/notification_submit.html
+END
+ok.html
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/svn/!svn/ver/1073/servers/mds/branches/release-1.1.x/sana/templates/ok.html
+END

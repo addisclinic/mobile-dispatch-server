@@ -1,0 +1,10 @@
+
+<b>Submit a Procedure</b>
+
+<form action="{% url sana-html-procedure-submit %}" method="POST" enctype="multipart/form-data">
+<table>
+{{ form.as_table }}
+</table>
+<input type="file" name="data"/>
+<input type="submit"/>
+</form>
