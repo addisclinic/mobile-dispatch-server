@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?eclipse-pydev version="1.0"?>
-
-<pydev_project>
+<?eclipse-pydev version="1.0"?><pydev_project>
 <pydev_property name="org.python.pydev.PYTHON_PROJECT_INTERPRETER">python</pydev_property>
 <pydev_property name="org.python.pydev.PYTHON_PROJECT_VERSION">python 2.6</pydev_property>
 <pydev_variables_property name="org.python.pydev.PROJECT_VARIABLE_SUBSTITUTION">
@@ -13,6 +11,6 @@
 <value>sana.settings.py</value>
 </pydev_variables_property>
 <pydev_pathproperty name="org.python.pydev.PROJECT_SOURCE_PATH">
-<path>/release-1.1.x</path>
+<path>/sana-mds-release-1.1.x</path>
 </pydev_pathproperty>
 </pydev_project>
