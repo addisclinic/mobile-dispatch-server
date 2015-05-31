@@ -1,5 +1,0 @@
-recursive-include moca/templates *
-recursive-include moca/media *
-recursive-include moca/ *
-
-include LICENSE README 
