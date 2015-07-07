@@ -1,0 +1,5 @@
+# Compiled python files
+*.pyc
+
+# Only until we have a better system for sharing/storing secrets/config
+sana/settings.py
