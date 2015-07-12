@@ -15,7 +15,7 @@ class ThreadBufferedHandler(Handler):
     """
     A logging handler that buffers records by thread.
     """
-    
+
     def __init__(self):
         if not threading_supported:
             raise NotImplementedError("ThreadBufferedHandler cannot be used "
@@ -24,11 +24,11 @@ class ThreadBufferedHandler(Handler):
         self.records = {} # Dictionary (Thread -> list of records)
 
     def emit(self, record):
-        """ 
-        Append the record to the buffer for the current thread. 
-        
+        """
+        Append the record to the buffer for the current thread.
+
         Parameters:
-            record 
+            record
                 A log entry to append.
         """
         self.get_records().append(record)
@@ -36,7 +36,7 @@ class ThreadBufferedHandler(Handler):
     def get_records(self, thread=None):
         """
         Gets the log messages for a thread.
-        
+
         Parameters:
             thread
                 The thread to get messages for or the current thread if
@@ -51,9 +51,9 @@ class ThreadBufferedHandler(Handler):
     def clear_records(self, thread=None):
         """
         Clears the log messages for a thread.
-        
+
         Parameters:
-            thread 
+            thread
                 The thread to clear messages for or the current thread if
                 no thread is specified.
         """

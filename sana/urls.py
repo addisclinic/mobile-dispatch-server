@@ -93,10 +93,10 @@ urlpatterns = patterns(
         'sana.mrs.json.eventlog_submit',
         name="sana-json-eventlog-submit"),
 
-    #Manila Branch  saved procedure syncing    
+    #Manila Branch  saved procedure syncing
     #url(r'^json/saved_procedure/(?P<id>[0-9-]+)/$',
     #    'sana.mrs.json.saved_procedure_get',
-    #    name="sana-json-saved-procedure-get"),        
+    #    name="sana-json-saved-procedure-get"),
 
     #url(r'^json/sync_encounters/(?P<patient_id>[0-9-]+)/$',
     #    'sana.mrs.json.syc_encounters',
@@ -105,7 +105,7 @@ urlpatterns = patterns(
     #url(r'^json/sync_encounters/(?P<patient_id>[0-9-]+)/(?P<encounters>[0-9:-]+)$',
     #    'sana.mrs.json.syc_encounters',
     #    name="sana-json-encounters-sync"),
-        
+
 
     # LOGGING
 

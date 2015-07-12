@@ -27,7 +27,7 @@ BINARY_TYPES_EXTENSIONS = {
     'SOUND': '3gp',
     'VIDEO': '3gp',
     'BINARYFILE': 'mpg',}
-"""File extensions for the binary types.""" 
+"""File extensions for the binary types."""
 
 CONTENT_TYPES = {
     'PICTURE': 'image/jpeg',
@@ -49,25 +49,25 @@ CONVERTED_CONTENT_TYPES = {
 
 DEFAULT_PATIENT_ID = "500"
 
-months_dict = {'January':'01', 
-               'February':'02', 
-               'March':'03', 
-               'April':'04', 
-               'May':'05', 
-               'June':'06', 
-               'July':'07', 
-               'August':'08', 
-               'September':'09', 
-               'October':'10', 
-               'November':'11', 
+months_dict = {'January':'01',
+               'February':'02',
+               'March':'03',
+               'April':'04',
+               'May':'05',
+               'June':'06',
+               'July':'07',
+               'August':'08',
+               'September':'09',
+               'October':'10',
+               'November':'11',
                'December':'12'}
 """Month name to two character numeric string mapping."""
 
 def register_saved_procedure(sp_guid, procedure_guid, responses,
                              client_id, username, password):
     '''
-    Registers a new saved procedure as well as looks up an existing one. 
-        
+    Registers a new saved procedure as well as looks up an existing one.
+
     Parameters:
         sp_guid
             the id of this encounter
@@ -81,8 +81,8 @@ def register_saved_procedure(sp_guid, procedure_guid, responses,
             A username(for uploading).
         password
             A password(for uploading).
-        
-        Note: There is a naming inconsistency between this method and others in 
+
+        Note: There is a naming inconsistency between this method and others in
         this module with respect to the use of procedure_guid
     '''
     logging.info('Registering saved procedure %s' % sp_guid)
@@ -93,18 +93,18 @@ def register_saved_procedure(sp_guid, procedure_guid, responses,
     sp, created = SavedProcedure.objects.get_or_create(guid=sp_guid, client=client)
     sp.procedure_guid=procedure_guid
     sp.client=client
-    
+
     # Block all other threads from acquiring this saved procedure
     if not created:
-        logging.warning('SavedProcedure -> %s exists. unstable connection?' 
+        logging.warning('SavedProcedure -> %s exists. unstable connection?'
                         % sp_guid)
     sp.upload_username = username
     sp.upload_password = password
     sp.responses = responses
     sp.save()
-    
+
     # Read through responses and create BinaryResources if type is in
-    # BINARY_TYPES above 
+    # BINARY_TYPES above
     try:
         responses_dict = cjson.decode(responses,True)
         for k,v in responses_dict.items():
@@ -130,7 +130,7 @@ def register_saved_procedure(sp_guid, procedure_guid, responses,
                     if not os.path.exists(path):
                         os.makedirs(path)
                     open(br.data.path, "w").close()
-                    logging.info('BinaryResource -> %s has  file -> %s' 
+                    logging.info('BinaryResource -> %s has  file -> %s'
                                  % (br.pk, br.data.path))
                     br.save()
                     br = None
@@ -141,8 +141,8 @@ def register_saved_procedure(sp_guid, procedure_guid, responses,
 def maybe_upload_procedure(saved_procedure):
     """Validates whether an encounter is ready to upload to the emr backend.
     Requires all associated BinaryResources be complete.
-    
-    Parameters: 
+
+    Parameters:
         saved_procedure
             The SavedProcedure object which may be uploaded.
     """
@@ -150,7 +150,7 @@ def maybe_upload_procedure(saved_procedure):
     message = ""
     logging.debug("Should I upload %s to the MRS?" % saved_procedure.guid)
     binaries = saved_procedure.binaryresource_set.all()
-    
+
     ready = True
     waiting = []
     ready_list = []
@@ -162,31 +162,31 @@ def maybe_upload_procedure(saved_procedure):
             ready = ready and True
             ready_list.append(binary.guid)
         else:
-            logging.debug("BinaryResource: %s completed: %s/%s" % 
+            logging.debug("BinaryResource: %s completed: %s/%s" %
                          (binary.pk, binary.upload_progress, binary.total_size))
             waiting.append(binary.guid)
-            message = ("Encounter: %s is WAITING on  %s" 
+            message = ("Encounter: %s is WAITING on  %s"
                        % (saved_procedure.guid, waiting))
             ready = ready and False
-    logging.debug("Encounter: %s has %s READY and %s WAITING" 
+    logging.debug("Encounter: %s has %s READY and %s WAITING"
                   % (saved_procedure.guid,ready_list,waiting))
     # We need to bail here if not ready
     if not ready:
         return result, message
-    
+
     # if uploaded flag already true we don't want to try again
     if saved_procedure.uploaded:
         message = "Encounter -> %s, Already uploaded." %  saved_procedure.guid
         logging.info(message)
         return result, message
- 
+
     # do the upload
     binaries_to_upload = [binary for binary in binaries if not binary.uploaded]
-    logging.debug('Uploading Encounter -> %s, Binaries to upload = %s' 
+    logging.debug('Uploading Encounter -> %s, Binaries to upload = %s'
                   % (saved_procedure.guid, binaries_to_upload))
     files = defaultdict(list)
-    
-    # Set file for upload 
+
+    # Set file for upload
     for binary in binaries_to_upload:
         files[str(binary.element_id)].append(str(binary.data.path))
 
@@ -217,7 +217,7 @@ def maybe_upload_procedure(saved_procedure):
     if procedure_title_element:
         del responses['procedureTitle']
         procedure_title = procedure_title_element.get('answer', '')
-    
+
     for eid,attr in responses.items():
         if enrolled == "Yes":
             if (eid == "patientId"):
@@ -255,22 +255,22 @@ def maybe_upload_procedure(saved_procedure):
             else:
                 attr['id'] = eid
                 cleaned_responses.append(attr)
-    patient_birthdate = '%s/%s/%s' % (months_dict[patient_month], patient_day, 
+    patient_birthdate = '%s/%s/%s' % (months_dict[patient_month], patient_day,
                                       patient_year)
-    
+
     if patient_id is None:
         patient_id = DEFAULT_PATIENT_ID
-    
+
     if patient_gender in ['Male', 'male', 'M', 'm']:
         patient_gender = 'M'
     elif patient_gender in ['Female', 'female', 'F', 'f']:
         patient_gender = 'F'
-    
+
     # Begin upload to the emr
     omrs = openmrs.OpenMRS(saved_procedure.upload_username,
                           saved_procedure.upload_password,
                           settings.OPENMRS_SERVER_URL)
-      
+
     # creates the patient upstream if it does not exist
     new_patient = True if enrolled == "No" else False
     logging.debug("patient enrolled: %s" % new_patient)
@@ -281,7 +281,7 @@ def maybe_upload_procedure(saved_procedure):
                         patient_last,
                         patient_gender,
                         patient_birthdate)
-        
+
     # execute upload
     logging.debug("Uploading to OpenMRS: %s %s %s %s %s "
                   % (patient_id, client_name,
@@ -302,12 +302,12 @@ def maybe_upload_procedure(saved_procedure):
             binary.uploaded = True
             binary.save()
             logging.debug("Uploaded = True %s" % binaries_to_upload)
-        flush(saved_procedure) 
+        flush(saved_procedure)
     return result, message
 
 def register_binary(procedure_guid, element_id, data):
     """Creates the BinaryResource object associated with an encounter.
-    
+
     Parameters:
         procedure_guid
             The encounter id
@@ -334,7 +334,7 @@ def register_binary(procedure_guid, element_id, data):
 def register_binary_chunk(sp_guid, element_id, element_type, binary_guid,
                           file_size, byte_start, byte_end, byte_data):
     """Saves an iterable chunk of data to a BinaryResource file
-    
+
     Parameters:
         sp_guid
             the encounter id
@@ -343,7 +343,7 @@ def register_binary_chunk(sp_guid, element_id, element_type, binary_guid,
         element_type
             The type attribute of the parent element
         binary_guid
-            The comma separated value from the parent element answer attribute 
+            The comma separated value from the parent element answer attribute
             for this binary
         file_size
             The total size of the binary
@@ -364,20 +364,20 @@ def register_binary_chunk(sp_guid, element_id, element_type, binary_guid,
                                                         element_id=element_id,
                                                         procedure=sp,
                                                         guid=binary_guid)
-        logging.debug("Opened BinaryResource -> %d, new: %s" % (binary.pk, 
+        logging.debug("Opened BinaryResource -> %d, new: %s" % (binary.pk,
                                                                created))
         # Have to include this here because thread switvhing under heavy load
         # will occasionally swap in register_saved_procedure before this happens
-        # Shouldn't matter if client is operating correctly but we include to 
+        # Shouldn't matter if client is operating correctly but we include to
         # be safe
         if created:
-            filename = "%s.%s" % (binary.pk, 
+            filename = "%s.%s" % (binary.pk,
                                   BINARY_TYPES_EXTENSIONS[element_type])
             binary.create_stub(fname=filename)
-            
-        # if chunk was already received, i.e. receive_completed() = True, we may 
+
+        # if chunk was already received, i.e. receive_completed() = True, we may
         # be in one of two states:
-        # 1. converting 
+        # 1. converting
         # 2. uploading
         # both may be caused by large file size
         if binary.receive_completed():
@@ -387,12 +387,12 @@ def register_binary_chunk(sp_guid, element_id, element_type, binary_guid,
                 else:
                     message = "Converting..."
             else:
-                message = "Uploading"     
+                message = "Uploading"
             return True, message
         binary.content_type = element_type
         binary.total_size = int(file_size)
-        binary.save()        
-        
+        binary.save()
+
         # loop where we write the data to disk
         with open(binary.data.path, "r+b") as dest:
             bytes_written = 0
@@ -423,7 +423,7 @@ def register_binary_chunk(sp_guid, element_id, element_type, binary_guid,
             logging.debug('binary upload progress -> %s of %s'
                      % (binary.upload_progress, binary.total_size))
         binary.save()
-        
+
         # Check if upload is completed and convert
         if maybe_convert(binary):
             convert_binary(binary)
@@ -436,14 +436,14 @@ def register_binary_chunk(sp_guid, element_id, element_type, binary_guid,
         result = False
         message = ('SavedProcedure -> %s, BinaryResource -> %s: %s %s'
                    % (binary_guid, sp_guid, etype, value))
-        
+
         for tbm in trace:
             logging.error(tbm)
     return result, message
 
 def register_client_events(client_id, events):
     """Register one or more events for a client
-    
+
     Parameters:
         client_id
             The client to register events for
@@ -499,24 +499,24 @@ def register_client_events(client_id, events):
 def maybe_convert(binary):
     """Returns True if the binary is a convertible type and the CONVERT_MEDIA
     flag is True in the settings.
-    
-    Parameters:    
+
+    Parameters:
         binary
             The BinaryResource which will be checked for conversion
-    """ 
+    """
     return (settings.CONVERT_MEDIA and binary.ready_to_convert())
 
 def convert_binary(binary):
-    """Executes conversion of the binary. Returns True if conversion is 
+    """Executes conversion of the binary. Returns True if conversion is
     successful
-        
+
     Parameters:
         binary
             The BinaryResource which will be checked for conversion
     """
     file_type = binary.content_type
     extension = CONVERTED_BINARY_TYPES_EXTENSIONS[file_type]
-    type = CONVERTED_CONTENT_TYPES[file_type]         
+    type = CONVERTED_CONTENT_TYPES[file_type]
     logging.debug("CONVERSION ARGS: %s %s %s " % (binary, type, extension))
     result, message = FFmpeg().convert(binary, type, extension)
     logging.debug('FFmpeg: %s %s' % (result, message))

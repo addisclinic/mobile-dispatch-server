@@ -17,18 +17,18 @@ class Client(models.Model):
 
     def __unicode__(self):
         return self.name
-    
+
     def touch(self):
         self.save()
 
 class ClientEventLog(models.Model):
     """ A log entry for client events
-    
+
     """
     class Meta:
         app_label = 'mrs'
         unique_together = (('event_type', 'event_time'),)
-    
+
     client = models.ForeignKey('Client')
     event_type = models.CharField(max_length=512)
     event_value = models.TextField()
@@ -55,11 +55,11 @@ class Patient(models.Model):
     modified = models.DateTimeField(auto_now=True)
 
 class Procedure(models.Model):
-    """ A series of steps used to collect data observations 
+    """ A series of steps used to collect data observations
     """
     class Meta:
         app_label = 'mrs'
-    
+
     title = models.CharField(max_length=255)
     procedure_guid = models.CharField(max_length=255, unique=True)
     procedure = models.TextField()
@@ -68,7 +68,7 @@ class Procedure(models.Model):
     modified = models.DateTimeField(auto_now=True)
 
 class BinaryResource(models.Model):
-    """ A binary object, stored as a file, which was collected during an 
+    """ A binary object, stored as a file, which was collected during an
         encounter
     """
     class Meta:
@@ -103,18 +103,18 @@ class BinaryResource(models.Model):
 
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
-    
+
     # Whether type will be converted before upload
     convert_before_upload = models.BooleanField(default=False)
-    
+
     # Whether the data has been converted. Binaries which do not need to be
     # converted before upload are considered to be in a state where conversion
-    # is complete 
+    # is complete
     conversion_complete = models.BooleanField(default=True)
 
     def receive_completed(self):
         """ Indicates whether the client has uploaded this entire
-            binary resource to the MDS. 
+            binary resource to the MDS.
         """
         return self.total_size > 0 and self.total_size == self.upload_progress
 
@@ -122,14 +122,14 @@ class BinaryResource(models.Model):
         """ Indicates whether binary is ready to be converted. Binaries which do
             not need to be converted will return False.
         """
-        return (self.receive_completed() and 
+        return (self.receive_completed() and
                 (self.convert_before_upload == True) and
                 (self.conversion_complete == False))
 
     def ready_to_upload(self):
         """ Indicates whether binary upload and conversion are complete
         """
-        return (self.receive_completed() and 
+        return (self.receive_completed() and
                 (self.conversion_complete == True))
 
     def filename(self):
@@ -137,7 +137,7 @@ class BinaryResource(models.Model):
 
     def flush(self):
         """ Removes any file on disk that was created for this object.
-        
+
             Sets the path assigned to the data field to None and commits on
             successful removal
         """
@@ -145,10 +145,10 @@ class BinaryResource(models.Model):
         if f and os.path.isfile(f):
             os.remove(self.data.path)
         self.save()
-        
+
     def create_stub(self, fname=None):
         """ Creates a zero length file stub on disk
-        
+
             fname => a filename to assign. If None it will be auto-generated.
             Sets and updates the data field on success
         """
@@ -161,17 +161,17 @@ class BinaryResource(models.Model):
         # create the stub and commit if no exceptions
         open(self.data.path, "w").close()
         self.save()
-            
+
 class SavedProcedure(models.Model):
     """ An encounter, representing a completed procedure, where data has been
         collected
     """
     class Meta:
         app_label = 'mrs'
-        
+
     def __init__(self,*pargs,**kwargs):
         models.Model.__init__(self, *pargs, **kwargs)
-        
+
     def __unicode__(self):
         return "SavedProcedure %s %s" % (self.guid, self.created)
 
@@ -201,7 +201,7 @@ class SavedProcedure(models.Model):
     # Might be cleaner to make this an integer, but EMR systems in general
     # might not use an integer as the unique ID of an encounter.
     encounter = models.CharField(default="-1", max_length=512)
-    
+
     def flush(self):
         """ Removes the responses text and files for this SavedProcedure """
         self.responses = ''
@@ -209,7 +209,7 @@ class SavedProcedure(models.Model):
         if settings.FLUSH_BINARYRESOURCE:
             for br in self.binaryresource_set.all():
                 br.flush();
-    
+
 class Notification(models.Model):
     """ A message to be sent
     """
@@ -231,12 +231,12 @@ class Notification(models.Model):
             'procedureId': self.procedure_id,
             'patientId': self.patient_id
             })
-        
+
     def flush(self):
         """ Removes the message text """
         self.message = ''
         self.save()
-        
+
 class QueueElement(models.Model):
     """ An element that is being processed
     """

@@ -1,17 +1,17 @@
-"""Django settings for Sana project. 
+"""Django settings for Sana project.
 
 This file contains the application configuration variablesan is available with
 all default values as: ::
 
     settings.py.tmpl
 
-and should be renamed to settings.py prior to filling in local values. Once 
+and should be renamed to settings.py prior to filling in local values. Once
 updated, enter the following from the mds installation directory::
-    
+
     $> ./manage.py syncdb
-    
-This will require root privileges. 
-    
+
+This will require root privileges.
+
 :Authors: Sana Development Team
 :Version: 1.1
 """
@@ -30,22 +30,22 @@ ADMINS = (
 MANAGERS = ADMINS
 
 ### Database settings
-DATABASE_ENGINE = ''           
+DATABASE_ENGINE = ''
 """'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'."""
 
-DATABASE_NAME = ''             
+DATABASE_NAME = ''
 """Or path to database file if using sqlite3."""
 
-DATABASE_USER = ''             
+DATABASE_USER = ''
 """Not used with sqlite3."""
 
-DATABASE_PASSWORD = ''         
+DATABASE_PASSWORD = ''
 """Not used with sqlite3."""
 
-DATABASE_HOST = ''             
+DATABASE_HOST = ''
 """Set to empty string for localhost. Not used with sqlite3."""
 
-DATABASE_PORT = ''             
+DATABASE_PORT = ''
 """Set to empty string for default. Not used with sqlite3."""
 
 TIME_ZONE = 'America/Chicago'
@@ -69,17 +69,17 @@ SITE_ID = 1
 
 
 USE_I18N = True
-"""If you set this to False, Django will make some optimizations so as not to 
+"""If you set this to False, Django will make some optimizations so as not to
 load the internationalization machinery."""
 
 MEDIA_ROOT = ''
-"""Absolute path to the directory that holds media. For a typical Sana 
+"""Absolute path to the directory that holds media. For a typical Sana
 deployment use: "/opt/sana/media/"
 """
 
 MEDIA_URL = ''
 """URL that handles the media served from MEDIA_ROOT. Make sure to use a
-trailing slash if there is a path component (optional in other cases). For a 
+trailing slash if there is a path component (optional in other cases). For a
 typical Sana deployment use: "/mds/media/". """
 
 ADMIN_MEDIA_PREFIX = '/media/'
@@ -109,9 +109,9 @@ ROOT_URLCONF = 'sana.urls'
 
 TEMPLATE_DIRS = (
 )
-"""Put strings here, like "/home/html/django_templates" or 
-"C:/www/django/templates". Always use forward slashes, even on Windows. Don't 
-forget to use absolute paths, not relative paths.For a typical Sana 
+"""Put strings here, like "/home/html/django_templates" or
+"C:/www/django/templates". Always use forward slashes, even on Windows. Don't
+forget to use absolute paths, not relative paths.For a typical Sana
 deployment use: "/opt/sana/templates/"."""
 
 INSTALLED_APPS = (
@@ -124,9 +124,9 @@ INSTALLED_APPS = (
 )
 """Don't touch this unless you know what you are doing."""
 
-### OpenMRS settings. OpenMRS versions seem to have some difference in submitted 
-### date format. 
-OPENMRS_SERVER_URL = 'http://localhost/openmrs' 
+### OpenMRS settings. OpenMRS versions seem to have some difference in submitted
+### date format.
+OPENMRS_SERVER_URL = 'http://localhost/openmrs'
 """Change localhost when deployed."""
 OPENMRS_DATE_FMT = '%m/%d/%Y %H:%M'
 """For OpenMRS ver. 1.6. Set to %d/%m/%Y when using OpenMRS 1.7."""
@@ -161,24 +161,24 @@ ZNISMS_SENDERID = ''
 """Consult ZniSMS documentation."""
 
 ### Email Configuration
-EMAIL_HOST = ''             
+EMAIL_HOST = ''
 """Outgoing mail server."""
-EMAIL_HOST_USER = ''        
+EMAIL_HOST_USER = ''
 """Password for account used to send."""
-EMAIL_HOST_PASSWORD = ''   
+EMAIL_HOST_PASSWORD = ''
 """Password for account used to send."""
-EMAIL_PORT = ''               
-"""Check with mail host, i.e. gmail uses 587."""  
-EMAIL_USE_TLS = True        
+EMAIL_PORT = ''
+"""Check with mail host, i.e. gmail uses 587."""
+EMAIL_USE_TLS = True
 """Check with mail host if encryption is supported"""
 
 CONVERT_MEDIA = False
 """Set to True to convert media; i.e. if you are uploading audio or video."""
 
-FLUSH_SAVEDPROCEDURE = False 
-"""Set to True to flush text data on successful send.""" 
+FLUSH_SAVEDPROCEDURE = False
+"""Set to True to flush text data on successful send."""
 FLUSH_BINARYRESOURCE = False
-"""Set to True to flush file data on successful send.""" 
+"""Set to True to flush file data on successful send."""
 FLUSH_NOTIFICATION = False
-# Set to True to flush notification data on successful send.""" 
+# Set to True to flush notification data on successful send."""
 

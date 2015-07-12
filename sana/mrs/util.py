@@ -42,7 +42,7 @@ def trace(f):
 
 def log_json_detail(request, log_id):
     log = RequestLog.objects.get(pk=log_id)
-    
+
     message = {'id': log_id,
                'data': cjson.decode(log.message,True)}
 
@@ -76,7 +76,7 @@ class LoggingMiddleware(object):
                               message=message,
                               duration=time_taken)
         log_entry.save()
-        
+
     def process_request(self, request):
         setattr(request, LOGGING_START_TIME_ATTR, time.time())
         self._handler.clear_records()
@@ -97,14 +97,14 @@ class LoggingMiddleware(object):
                 'function_name': record.funcName,
                 'line_number': record.lineno,
                 'message': record.msg,
-                'delta': self._record_delta(record.created, first.created) 
+                'delta': self._record_delta(record.created, first.created)
                 }
 
     def process_response(self, request, response):
-        
+
         if not hasattr(request, LOGGING_ENABLE_ATTR):
             return response
-        
+
         time_taken = -1
         if hasattr(request, LOGGING_START_TIME_ATTR):
             start = getattr(request, LOGGING_START_TIME_ATTR)
@@ -123,7 +123,7 @@ class LoggingMiddleware(object):
         return response
 
 def log_traceback(logging):
-    """Prints the traceback for the most recently caught exception to the log 
+    """Prints the traceback for the most recently caught exception to the log
     and returns a nicely formatted message.
     """
     et, val, tb = sys.exc_info()
@@ -133,12 +133,12 @@ def log_traceback(logging):
         logging.error(traceback.format_tb(item))
     mod = stack[0]
     return "Exception : %s %s %s" % (et, val, trace[0])
-    
+
 
 def flush(flushable):
-    """ Removes data stored for a model instance cached in this servers data 
+    """ Removes data stored for a model instance cached in this servers data
         stores
-    
+
         flushable => a instance of a class which provides a flush method
     """
     flush_setting = 'FLUSH_'+flushable.__class__.__name__.upper()
@@ -169,7 +169,7 @@ def split(fin, path, chunksize=chunksize):
     input = open(fin, "rb")
     while True:
         chunk = input.read(chunksize)
-        if not chunk: 
+        if not chunk:
             break
         partnum += 1
         outfile = os.path.join(path,('chunk%s' % partnum))

@@ -16,7 +16,7 @@ def chunk( seq, size, pad=None ):
     length equal to size. The last chunk is padded if necessary.
 
     Example: ::
-    
+
         >>> list(chunk(range(1,10),3))
             [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
         >>> list(chunk(range(1,9),3))
@@ -29,7 +29,7 @@ def chunk( seq, size, pad=None ):
             [[1, 2, 3, 4, 5, 6, 7, 8, 9]]
         >>> for X in chunk([],3): print X
         >>>
-        
+
     Parmeters:
         seq
             The sequence to slice
@@ -101,9 +101,9 @@ def list_notifications(request):
 
 def home(request):
     """Top level url
-    
+
     Displays ::
-    
+
         Sanamobile MDS : Online
     """
     return HttpResponse('Sanamobile MDS : Online')

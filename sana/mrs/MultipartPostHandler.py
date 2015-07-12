@@ -4,12 +4,12 @@
 
 ####
 # 02/2006 Will Holcomb <wholcomb@gmail.com>
-# 
+#
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
 # version 2.1 of the License, or (at your option) any later version.
-# 
+#
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
@@ -18,7 +18,7 @@
 """Enables the use of multipart/form-data for posting forms
 
 Inspirations:
-    Upload files in python:  
+    Upload files in python:
         http://aspn.activestate.com/ASPN/Cookbook/Python/Recipe/146306
     urllib2_file:
         Fabien Seisen: <fabien@seisen.org>
@@ -98,7 +98,7 @@ class MultipartPostHandler(urllib2.BaseHandler):
             request.add_data(data)
         return request
 
-    
+
     def multipart_encode(self,vars, files, boundary = None, buffer = None):
         if boundary is None:
             boundary = mimetools.choose_boundary()
@@ -120,9 +120,9 @@ class MultipartPostHandler(urllib2.BaseHandler):
             buffer += '\r\n' + fd.read() + '\r\n'
         buffer += '--%s--\r\n\r\n' % boundary
         return boundary, buffer
-    
+
     # added to handle Unicode(EW)
-    
+
     def multipart_encode2(self,vars, files, boundary = None, buf = None):
         if boundary is None:
             boundary = mimetools.choose_boundary()

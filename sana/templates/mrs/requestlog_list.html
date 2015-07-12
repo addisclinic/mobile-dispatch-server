@@ -34,9 +34,9 @@ function json_update(msg, callback) {
 }
 
 function getDetails(id, callback) {
-  $.getJSON("{% url log-json-detail-noarg %}" + id, 
-            {}, 
-            function(data) {json_update(data, callback); });  
+  $.getJSON("{% url log-json-detail-noarg %}" + id,
+            {},
+            function(data) {json_update(data, callback); });
 }
 
 function buildRowHtml(record) {
@@ -53,14 +53,14 @@ function updateDetails(id, data) {
   var detail = $("#log-"+id+"-detail");
   detail.html(message);
   detail.attr('data', data);
-  
+
 }
 
 function hideDetail(id) {
   jQuery("#log-"+id+"-detail").hide();
 }
 </script>
-{% endblock %} 
+{% endblock %}
 
 {% block body %}
 

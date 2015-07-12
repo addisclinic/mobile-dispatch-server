@@ -1,4 +1,4 @@
-"""Http request handlers for JSON encoded submissions. 
+"""Http request handlers for JSON encoded submissions.
 
 Logging
 -------
@@ -52,11 +52,11 @@ from sana.mrs.models import Notification, SavedProcedure
 MSG_MDS_ERROR = 'Dispatch Error'
 
 def render_json_template(*args, **kwargs):
-    """Renders a JSON template, and then calls render_json_response(). 
-    
+    """Renders a JSON template, and then calls render_json_response().
+
     Parameters:
         args
-            list of items to render 
+            list of items to render
         kwargs
             keyword/value pairs to render
     """
@@ -65,7 +65,7 @@ def render_json_template(*args, **kwargs):
 
 def render_json_response(data):
     """Sends an HttpResponse with the X-JSON header and the right mimetype.
-    
+
     Parameters:
         data
             message content
@@ -77,13 +77,13 @@ def render_json_response(data):
 
 def json_fail(message):
     """Creates a formatted failure response. Response format::
-    
+
         {'status':'FAILURE', 'message': message }
-    
+
     Parameters:
         message
             Response message body
-    
+
     """
     response = {
         'status': 'FAILURE',
@@ -92,10 +92,10 @@ def json_fail(message):
     return cjson.encode(response)
 
 def json_succeed(data, encounter=None):
-    """Creates a formatted success response. Response format:: 
-    
+    """Creates a formatted success response. Response format::
+
         {'status':'SUCCESS', 'message': message }
-    
+
     Parameters:
         message
             The response message body
@@ -109,14 +109,14 @@ def json_succeed(data, encounter=None):
     return cjson.encode(response)
 
 def json_savedprocedure_succeed(savedproc_guid, encounter, data):
-    """Creates a formatted success response for returning encounter data. 
-    Response format:: 
-    
-        {'status':'SUCCESS', 
+    """Creates a formatted success response for returning encounter data.
+    Response format::
+
+        {'status':'SUCCESS',
         'data': data,
         'encounter': encounter,
         'procedure_guid': procedure_guid, }
-    
+
     Parameters:
         savedproc_guid
             an encounter, or saved procedure, id
@@ -124,7 +124,7 @@ def json_savedprocedure_succeed(savedproc_guid, encounter, data):
             encounter
         data
             encounter text data
-    
+
     """
     response = {
         'status': 'SUCCESS',
@@ -136,13 +136,13 @@ def json_savedprocedure_succeed(savedproc_guid, encounter, data):
 
 def validate_credentials(request):
     """Validates user credentials with the backing data store.
-    
+
     Request parameters:
         username
             a valid username
         password
             a valid password
-    
+
     Parameters:
         request
             An authorization check request.
@@ -167,9 +167,9 @@ def validate_credentials(request):
 
 class ProcedureSubmitForm(forms.Form):
     """Http POST form for encounter uploads.
-    
+
     Request Parameters
-    
+
     ============== =========================================
          Label                    Description
     ============== =========================================
@@ -180,7 +180,7 @@ class ProcedureSubmitForm(forms.Form):
     username       a valid username
     password       a valid password
     ============== =========================================
-    
+
     :Authors: Sana dev team
     :Version: 1.1
     """
@@ -190,13 +190,13 @@ class ProcedureSubmitForm(forms.Form):
     procedure_guid = forms.CharField(required=True, max_length=512)
     responses = forms.CharField(required=True)
     phone = forms.CharField(max_length=255, required=False, initial='')
-    
+
 
 @enable_logging
 def procedure_submit(request):
     """Accepts a request to send collected encounter data to the data store.
     See ProcedureSubmitForm for request parameters
-    
+
     Parameters:
         request
             The data uploaded from the client.
@@ -242,12 +242,12 @@ def procedure_submit(request):
 
 class BinaryChunkSubmitForm(forms.Form):
     """Form for submitting binary content in packetized form.
-    
+
     ============== ================================
-    Label          Description 
+    Label          Description
     ============== ================================
     procedure_guid the phone generated encounter id
-    element_id     the element within the encounter for which the binary 
+    element_id     the element within the encounter for which the binary
                    was recorded
     element_type   the type attribute of the parent element
     binary_guid    the comma separated value from the parent element
@@ -255,9 +255,9 @@ class BinaryChunkSubmitForm(forms.Form):
     file_size      the total size of the binary
     byte_start     the offset from the start of the file for this chunk
     byte_end       byte_start + chunk size(deprecated)
-    byte_data      the chunk that will be written 
+    byte_data      the chunk that will be written
     ============== ================================
-    
+
     :Authors: Sana dev team
     :Version: 1.1
     """
@@ -273,20 +273,20 @@ class BinaryChunkSubmitForm(forms.Form):
 
 @enable_logging
 def binarychunk_submit(request):
-    """Accepts requests which contain a packetized chunk of binary data 
-    uploaded for an encounter whose text has already been submitted but is 
-    waiting for all binary from the mobile client to be received prior to 
-    uploading to the data store. 
-        
-    Note: There is a naming inconsistency between this function's use of 
+    """Accepts requests which contain a packetized chunk of binary data
+    uploaded for an encounter whose text has already been submitted but is
+    waiting for all binary from the mobile client to be received prior to
+    uploading to the data store.
+
+    Note: There is a naming inconsistency between this function's use of
     procedure_guid and that of the register_saved_procedure function.
 
     Request parameters, per BinaryChunkSubmitForm.
-    
+
     Parameters:
         request
             A binary chunk sent from a client.
-    """    
+    """
     response = ''
     form = BinaryChunkSubmitForm(request.POST, request.FILES)
 
@@ -313,10 +313,10 @@ def binarychunk_submit(request):
                                                     byte_end,
                                                     byte_data.chunks())
             if result:
-                response = json_succeed("Successfully saved binary chunk: %s" 
+                response = json_succeed("Successfully saved binary chunk: %s"
                                         % message)
             else:
-                response = json_fail("Failed to save the binary chunk: %s" 
+                response = json_fail("Failed to save the binary chunk: %s"
                                      % message)
         except Exception, e:
             et, val, tb = sys.exc_info()
@@ -337,14 +337,14 @@ def binarychunk_submit(request):
     return render_json_response(response)
 
 class BinaryChunkHackSubmitForm(forms.Form):
-    """Form for submitting binary content encoded as base64 text in packetized 
+    """Form for submitting binary content encoded as base64 text in packetized
     form.
-    
+
     ============== ================================
-    Label          Description 
+    Label          Description
     ============== ================================
     procedure_guid the phone generated encounter id
-    element_id     the element within the encounter for which the binary 
+    element_id     the element within the encounter for which the binary
                    was recorded
     element_type   the type attribute of the parent element
     binary_guid    the comma separated value from the parent element
@@ -352,9 +352,9 @@ class BinaryChunkHackSubmitForm(forms.Form):
     file_size      the total size of the binary
     byte_start     the offset from the start of the file for this chunk
     byte_end       byte_start + chunk size(deprecated)
-    byte_data      the chunk that will be written 
+    byte_data      the chunk that will be written
     ============== ================================
-    
+
     :Authors: Sana dev team
     :Version: 1.1
     """
@@ -373,18 +373,18 @@ class BinaryChunkHackSubmitForm(forms.Form):
 
 @enable_logging
 def binarychunk_hack_submit(request):
-    """Accepts requests which contain a packetized chunk of binary data 
-    encoded as base64 text for an encounter whose text has already been 
-    submitted but waiting for all binary data from the mobile client to be 
+    """Accepts requests which contain a packetized chunk of binary data
+    encoded as base64 text for an encounter whose text has already been
+    submitted but waiting for all binary data from the mobile client to be
     received prior to uploading to the data store
-        
-    Note: There is a naming inconsistency between this function's use of 
+
+    Note: There is a naming inconsistency between this function's use of
     procedure_guid and that of the register_saved_procedure function.
-    
+
     Parameters
         request
             A client request.
-    """    
+    """
     response = ''
     form = BinaryChunkHackSubmitForm(request.POST, request.FILES)
 
@@ -434,17 +434,17 @@ def binarychunk_hack_submit(request):
 
 
 class BinarySubmitForm(forms.Form):
-    """Form for submitting binary content encoded as base64 text in packetized 
+    """Form for submitting binary content encoded as base64 text in packetized
     form.
-    
+
     ============== ================================
-    Label          Description 
+    Label          Description
     ============== ================================
     procedure_guid the phone generated encounter id
-    element_id     the element within the encounter for which the binary 
+    element_id     the element within the encounter for which the binary
                    was recorded
     ============== ================================
-    
+
     :Authors: Sana dev team
     :Version: 1.1
     """
@@ -454,19 +454,19 @@ class BinarySubmitForm(forms.Form):
 
 @enable_logging
 def binary_submit(request):
-    """Accepts requests which contain a non-packetized binary uploaded for an 
-    encounter whose text has already been submitted but waiting for all 
-    binary data from the mobile client. 
-    
+    """Accepts requests which contain a non-packetized binary uploaded for an
+    encounter whose text has already been submitted but waiting for all
+    binary data from the mobile client.
+
     See BinarySubmitForm for request parameters.
-        
-    Note: There is a naming inconsistency between this function's use of 
+
+    Note: There is a naming inconsistency between this function's use of
     procedure_guid and that of the register_saved_procedure function.
-    
+
     Parameters:
         request
             A binary POST submission.
-    """    
+    """
     response = ''
 
     form = BinarySubmitForm(request.REQUEST)
@@ -490,7 +490,7 @@ def binary_submit(request):
 
 class OpenMRSQueryForm(forms.Form):
     """A generic OpenMRS form with authorization information.
-    
+
     :Authors: Sana dev team
     :Version: 1.1
     """
@@ -501,19 +501,19 @@ class OpenMRSQueryForm(forms.Form):
 def patient_list(request):
     """Accepts a request to return a list of all patients from the backing data
     store. Used for synching the mobile client.
-    
+
     Warning: This can return a significant amount of patient data.
-    
+
     Request parameters:
         username
             a valid username
         password
             a valid password
-            
+
     Parameters:
         request
             A HTTP request for a patient list.
-    
+
     :Authors: Sana dev team
     :Version: 1.1
     """
@@ -538,18 +538,18 @@ def patient_list(request):
 
 @enable_logging
 def patient_get(request, id):
-    """Accepts a request to validate a patient id from the backing data store. 
-    Successful retrieval will return a a SUCCESS message with the patient data 
+    """Accepts a request to validate a patient id from the backing data store.
+    Successful retrieval will return a a SUCCESS message with the patient data
     formatted as::
-        
+
         <given_name><yyyy><mm><dd><family_name>f
-    
+
     Request params:
         username
             a valid username
         password
             a valid password
-            
+
     Parameters:
         request
             A patient request by id.
@@ -577,9 +577,9 @@ def patient_get(request, id):
 
 def parseAll(s):
     """Parses multiple patients from xml text.
-    
+
     Note: This function is OpenMRS specific
-    
+
     Parameters:
         s
             xml text string containing patient data
@@ -606,9 +606,9 @@ def parseAll(s):
 
 def parseOne(s):
     """Parses a single patient from xml text.
-    
+
     Note: THis function is OpenMRS specific
-        
+
     Parameters:
         s
             xml text string containing patient data
@@ -631,7 +631,7 @@ def parseOne(s):
 
 def getAllPatients(uri, user, passwd):
     """Gets all patients from OpenMRS.
-    
+
     Parameters:
         uri
             The server url.
@@ -650,7 +650,7 @@ def getAllPatients(uri, user, passwd):
 
 def getPatient(uri, user, passwd, userid):
     """Executes get request to the data store for checking a patient id.
-    
+
     Parameters:
         uri
             The server url.
@@ -669,7 +669,7 @@ def getPatient(uri, user, passwd, userid):
 
 def send_notification(n, phoneId):
     """Sends sms notification
-    
+
     Parameters:
         n
             The notification.
@@ -690,7 +690,7 @@ def format_sms(n):
     """Splits a given notification over a number of SMS messages and attaches
     header information for tracking which message is which. Returns a list of
     strings that are no more than SMS_MESSAGE_SIZE characters long.
-    
+
     Parameters:
         n
             The notfication.
@@ -747,11 +747,11 @@ def format_sms(n):
 
 def send_clickatell_notification(message_body, phoneId):
     """Sends an SMS message to Clickatell http interface
-        
-    See Clickatell API documentation for full details. 
-    
+
+    See Clickatell API documentation for full details.
+
     Clickatell params
-        user 
+        user
             Clickatell account user name
         password
             Clickatell account password
@@ -761,9 +761,9 @@ def send_clickatell_notification(message_body, phoneId):
             Recipient telephone number
         text
             Message Body
-        
+
     Clickatell url: http://api.clickatell.com/http/sendmsg?params
-    
+
     Parameters:
         message_body
             Message body
@@ -794,14 +794,14 @@ def send_clickatell_notification(message_body, phoneId):
 
 def send_znisms_notification(message_body, phoneId):
     """Sends an SMS message to ZniSMS http interface
-        
+
     ZniSMS API documentation: http://www.znisms.com/api.pdf
-        
+
     ZniSMS url: http://api.znisms.com/post/smsv3.asp?userid=joinus&apikey=xxx&
     message=Your+Message&senderid=9123123456&sendto=9123123457
-        
+
     ZniSMS Request params
-        userid     
+        userid
             ZniSMS username
         apikey
             ZniSMS API key
@@ -811,7 +811,7 @@ def send_znisms_notification(message_body, phoneId):
             Sender ID (should be alphanumeric)
         sendto
             Destination number (no +91, 91 or 0 in front)
-        
+
     Parameters:
         message_body
             Message body
@@ -842,7 +842,7 @@ def send_znisms_notification(message_body, phoneId):
 
 def send_fake_notification(n, phoneId):
     """Sends a fake SMS via telnet
-    
+
     Parameters:
         n
             The notification
@@ -875,15 +875,15 @@ def send_fake_notification(n, phoneId):
 @enable_logging
 def notification_submit(request):
     """Handles notification submissions
-        
+
     Request params
         phoneIdentifier
             The phone number
         notificationText
-            The notification 
+            The notification
         patientIdentifier
             A patient Identifier
-    
+
     Parameters:
         request
             Incoming http request
@@ -913,13 +913,13 @@ def notification_submit(request):
         except Exception, e:
             logging.error("Got error while trying to send notification: %s" % e)
             response = json_succeed('Failed to send notification. Error')
-            
+
     return render_json_response(response)
 
 @enable_logging
 def email_notification_submit(request):
     """Accepts and sends a request to forward an email notification.
-    
+
     Request Params:
         emailAddreses
             One or more recipient email addresses
@@ -931,7 +931,7 @@ def email_notification_submit(request):
             the subject line of the email
         notificationText
             the message body
-            
+
     Parameters:
         request
             Incoming http request
@@ -966,30 +966,30 @@ def email_notification_submit(request):
 @enable_logging
 def eventlog_submit(request):
     """Accepts a request for submitting client events.
-    
+
     Request Parameters:
-        client_id 
+        client_id
             The client phone number
-        events 
+        events
             The client events
-        
-    Events should be submitted as a list in JSON formatted text with each 
+
+    Events should be submitted as a list in JSON formatted text with each
     event having the following key/value pairs:
-    
+
     Event
         event_type
             An event type
-        event_value 
+        event_value
             An event value
-        event_time 
+        event_time
             The time of the event in milliseconds since epoch
-        encounter_reference 
+        encounter_reference
             The encounter, or saved procedure, id
         patient_reference
             The patient id
-        user_reference 
+        user_reference
             TODO
-    
+
     Parameters:
         request
             The client event log request.
@@ -1020,8 +1020,8 @@ def eventlog_submit(request):
 def send_kannel_notification(n, phoneId):
     """Sends a notification to a phone as one or more sms messages through a
     Kannel SMS gateway.
-    
-    Parameters:    
+
+    Parameters:
         n
             The message body
         phoneId
@@ -1044,15 +1044,15 @@ def send_kannel_notification(n, phoneId):
             logging.info("Kannel response: %s" % response)
             result = True
     except Exception, e:
-        logging.error("Couldn't submit Kannel notification for %s: %s" 
+        logging.error("Couldn't submit Kannel notification for %s: %s"
                       % (phoneId, e))
     return result
 
 def parseSavedProcedureAll(s):
     """ Parses zero or more encounters from the backing store. This is currently
     bound to OpenMRS.
-    
-    Parameters    
+
+    Parameters
         s
             XML text containing the encounters.
     """
@@ -1073,12 +1073,12 @@ def parseSavedProcedureAll(s):
             patient = firstname.lower() + birthdate[0:4] + birthdate[5:7] + birthdate[8:10] + lastname.lower() + ids[j].firstChild.data + gender.lower() + "##"
             patients += patient
     return patients
-    
-    
+
+
 @enable_logging
 def saved_procedure_get(request, id):
-    """Accepts a request for an encounter by its id. 
-    
+    """Accepts a request for an encounter by its id.
+
     Parameters:
         request
             The client HTTP request.
@@ -1093,17 +1093,17 @@ def saved_procedure_get(request, id):
     try:
         #patient = getPatient(url, username, password, id)
         #data = parseOne(patient)
-        
+
         saved_procedure = SavedProcedure.objects.get(guid=id)
-        
-        response = json_savedprocedure_succeed(saved_procedure.procedure_guid, 
-                                               saved_procedure.encounter, 
+
+        response = json_savedprocedure_succeed(saved_procedure.procedure_guid,
+                                               saved_procedure.encounter,
                                                saved_procedure.responses)
     except Exception, e:
         logging.error("Got error %s" % e)
         response = json_fail("couldn't find encounter")
-    logging.info("finished returning saved_procedure %s : %s : %s" 
-                 % (saved_procedure.procedure_guid, saved_procedure.encounter, 
+    logging.info("finished returning saved_procedure %s : %s : %s"
+                 % (saved_procedure.procedure_guid, saved_procedure.encounter,
                     saved_procedure.responses))
     return render_json_response(response)
 
@@ -1111,13 +1111,13 @@ def saved_procedure_get(request, id):
 @enable_logging
 def saved_procedure_list(request):
     """For synching saved procedures with mobile clients.
-    
+
     Request Params
         username
             A valid username.
         password
             A valid password.
-    
+
     Parameters:
         request
             A client request to synch
@@ -1139,13 +1139,13 @@ def saved_procedure_list(request):
 @enable_logging
 def syc_encounters(request, patient_id, encounters=None):
     """For synching specific saved procedures for a patient with mobile clients.
-    
+
     Request Params
         username
             A valid username.
         password
             A valid password.
-    
+
     Parameters:
         request
             A client request to synch
@@ -1153,7 +1153,7 @@ def syc_encounters(request, patient_id, encounters=None):
             The patient to look up
         encounters
             A list of encounters to look up.
-        
+
     """
     logging.info("Syncing encounters from MDS to client with patientID: %s" % patient_id)
     logging.info("Excluding following encounters: %s" % encounters)
@@ -1166,26 +1166,26 @@ def syc_encounters(request, patient_id, encounters=None):
 
     logging.info('Encounters found : %s' % encounters.count())
     cleaned_encounters = {}
-      
+
     procedure_guids = ''
-    
+
     for encounter in encounters:
         answerMap = ''
         response = {}
         responses = cjson.decode(encounter.responses,True)
-        
+
         for eid, attr in responses.items():
             response[eid] = attr.get('answer')
         answerMap = cjson.encode(response)
         cleaned_encounters[encounter.encounter] = response
         procedure_guids += ('%s#' % encounter.procedure_guid)
-    
+
     data = cjson.encode(cleaned_encounters)
     logging.info(data)
     logging.info(procedure_guids)
     logging.info("Returning encounters")
     response = json_succeed(procedure_guids, data)
-    
+
     logging.info("finished sync_encounters")
     return render_json_response(response)
 
