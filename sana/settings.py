@@ -16,6 +16,8 @@ This will require root privileges.
 :Version: 1.1
 """
 
+import os
+
 DEBUG = True
 ''' Global debug level. Should be set to False in production environments. '''
 
@@ -30,7 +32,7 @@ ADMINS = (
 MANAGERS = ADMINS
 
 ### Database settings
-DATABASE_ENGINE = ''
+DATABASE_ENGINE = os.environ['DATABASE_ENGINE'] or ''
 """'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'."""
 
 DATABASE_NAME = ''
