@@ -1,0 +1,3 @@
+-r prod.txt
+
+coveralls==1.0a2

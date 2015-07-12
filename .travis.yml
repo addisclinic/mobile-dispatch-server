@@ -1,0 +1,16 @@
+language: python
+sudo: false
+python:
+  - "2.7"
+env:
+  - DATABASE_ENGINE='sqlite3'
+install:
+  - pip install -r reqs/travis.txt
+cache:
+  directories:
+  - $HOME/.pip-cache/
+  - /home/travis/virtualenv/python2.7.9
+script:
+  - coverage run --source=bongo manage.py test
+after_success:
+  - coveralls

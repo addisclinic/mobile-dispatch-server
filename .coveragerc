@@ -1,0 +1,14 @@
+[run]
+source = bongo
+omit =
+    sana/media/*,
+    *.tmpl,
+    *__init__*,
+    *.html
+
+[report]
+exclude_lines =
+    pragma: no cover
+    def __str__
+    except ImportError
+    pass
