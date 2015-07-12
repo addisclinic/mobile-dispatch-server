@@ -11,6 +11,6 @@ cache:
   - $HOME/.pip-cache/
   - /home/travis/virtualenv/python2.7.9
 script:
-  - coverage run --source=bongo manage.py test
+  - coverage run --source=sana sana/manage.py test
 after_success:
   - coveralls
