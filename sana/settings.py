@@ -32,10 +32,10 @@ ADMINS = (
 MANAGERS = ADMINS
 
 ### Database settings
-DATABASE_ENGINE = os.environ['DATABASE_ENGINE'] or ''
+DATABASE_ENGINE = os.environ.get('DATABASE_ENGINE') or 'sqlite3'
 """'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'."""
 
-DATABASE_NAME = ''
+DATABASE_NAME = os.environ.get('DATABASE_NAME') or './sqlite.db'
 """Or path to database file if using sqlite3."""
 
 DATABASE_USER = ''
@@ -110,6 +110,7 @@ ROOT_URLCONF = 'sana.urls'
 """Don't touch this unless you know what you are doing."""
 
 TEMPLATE_DIRS = (
+    os.path.dirname(os.path.realpath(__file__)) + "/templates"
 )
 """Put strings here, like "/home/html/django_templates" or
 "C:/www/django/templates". Always use forward slashes, even on Windows. Don't
