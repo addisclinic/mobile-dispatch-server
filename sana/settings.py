@@ -74,6 +74,10 @@ USE_I18N = True
 """If you set this to False, Django will make some optimizations so as not to
 load the internationalization machinery."""
 
+SANA_DIR = os.path.dirname(__file__)
+
+BASE_DIR = os.path.dirname(os.path.join(os.pardir, SANA_DIR))
+
 MEDIA_ROOT = ''
 """Absolute path to the directory that holds media. For a typical Sana
 deployment use: "/opt/sana/media/"
