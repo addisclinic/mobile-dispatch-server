@@ -47,6 +47,7 @@ from sana.mrs.api import register_binary
 from sana.mrs.api import register_binary_chunk
 from sana.mrs.api import register_client_events
 from sana.mrs.util import enable_logging, mark
+from django.core import serializers
 from sana.mrs.models import Notification, SavedProcedure
 
 MSG_MDS_ERROR = 'Dispatch Error'
@@ -1198,4 +1199,38 @@ def notification_get_byproc(request, id):
 
 @enable_logging
 def notification_list(request):
-    pass
+    """For synching notifications with mobile clients.
+
+    Request Params
+        username
+            A valid username.
+        password
+            A valid password.
+
+    Parameters:
+        request
+            A client request for patient list
+    """
+    logging.info("entering notification list proc")
+    username = request.REQUEST.get("username", None)
+    password = request.REQUEST.get("password", None)
+    url = settings.OPENMRS_SERVER_URL
+    try:
+        data = serializers.serialize('json',Notification.objects.all()
+        logging.info("we finished getting the notification list")
+        response = {'status': 'SUCCESS',
+            'data': data,
+        }
+    except Exception, e:
+        et, val, tb = sys.exc_info()
+        trace = traceback.format_tb(tb)
+        error = "Exception : %s %s %s" % (et, val, trace[0])
+        for tbm in trace:
+            logging.error(tbm)
+        logging.error("Got exception while fetching notification list: %s" % e)
+        response = {
+            'status': 'FAILURE',
+            'data': "Problem while getting notification list: %s" % e,
+        }
+    return HttpResponse(response, mimetype=("application/json; charset=" +
+                                        settings.DEFAULT_CHARSET))
