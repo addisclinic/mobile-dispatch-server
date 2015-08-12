@@ -26,6 +26,7 @@ TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
+    ('Mike', 'michaelfromano@gmail.com'),
 )
 ''' Tuple of admin names and email addresses. '''
 

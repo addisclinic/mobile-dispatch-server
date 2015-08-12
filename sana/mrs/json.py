@@ -1190,4 +1190,12 @@ def syc_encounters(request, patient_id, encounters=None):
     return render_json_response(response)
 
 
+def notification_get_bypt(request, id):
+    pass
 
+def notification_get_byproc(request, id):
+    pass
+
+@enable_logging
+def notification_list(request):
+    pass
