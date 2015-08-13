@@ -1210,8 +1210,8 @@ def notification_get_byproc(request, id):
         notification = Notification.objects.get(procedure_id=id)
         logging.info("we finished getting the notification")
         response = {'status': 'SUCCESS',
-            'data': [notification, ],
-        }
+                'data': [notification, ],
+            }
     except Exception, e:
         et, val, tb = sys.exc_info()
         trace = traceback.format_tb(tb)
@@ -1222,7 +1222,7 @@ def notification_get_byproc(request, id):
         response = {'status': 'FAILURE',
             'data': "Problem while getting notification: %s" % e,
         }
-    return HttpResponse(response, mimetype=("application/json; charset=utf-8"))
+    return HttpResponse(cjson.encode(response), mimetype=("application/json; charset=utf-8"))
 
 
 
@@ -1261,4 +1261,4 @@ def notification_list(request):
             'status': 'FAILURE',
             'data': "Problem while getting notification list: %s" % e,
         }
-    return HttpResponse(response, mimetype=("application/json; charset=utf-8"))
+    return HttpResponse(cjson.encode(response), mimetype=("application/json; charset=utf-8"))
