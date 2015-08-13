@@ -1274,10 +1274,10 @@ def notification_list(request):
     password = request.REQUEST.get("password", None)
     url = settings.OPENMRS_SERVER_URL
     try:
-        data = serializers.serialize('json',Notification.objects.all())
+        data = Notification.objects.all()
         logging.info("we finished getting the notification list")
         response = {'status': 'SUCCESS',
-            'data': data,
+            'data': [cjson.decode(d.to_json()) for d in data],
         }
     except Exception, e:
         et, val, tb = sys.exc_info()
