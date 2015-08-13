@@ -1200,9 +1200,6 @@ def notification_get_bypt(request, id):
             valid password
     '''
     logging.info("entering get notification by patient procedure")
-    username = request.REQUEST.get("username", None)
-    password = request.REQUEST.get("password", None)
-    url = settings.OPENMRS_SERVER_URL
     try:
         notification = Notification.objects.get(patient_id=id)
         logging.info("we finished getting the notification")
@@ -1232,9 +1229,6 @@ def notification_get_byproc(request, id):
         valid password
     '''
     logging.info("entering get notification by proc procedure")
-    username = request.REQUEST.get("username", None)
-    password = request.REQUEST.get("password", None)
-    url = settings.OPENMRS_SERVER_URL
     try:
         notification = Notification.objects.get(procedure_id=id)
         logging.info("we finished getting the notification")
@@ -1270,9 +1264,6 @@ def notification_list(request):
             A client request for patient list
     """
     logging.info("entering notification list proc")
-    username = request.REQUEST.get("username", None)
-    password = request.REQUEST.get("password", None)
-    url = settings.OPENMRS_SERVER_URL
     try:
         data = Notification.objects.all()
         logging.info("we finished getting the notification list")
