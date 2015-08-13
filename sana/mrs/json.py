@@ -1195,7 +1195,36 @@ def notification_get_bypt(request, id):
     pass
 
 def notification_get_byproc(request, id):
-    pass
+    '''
+    Request Params:
+        username
+            valid username
+        password
+            valid password
+    '''
+    logging.info("entering get notification by proc procedure")
+    username = request.REQUEST.get("username", None)
+    password = request.REQUEST.get("password", None)
+    url = settings.OPENMRS_SERVER_URL
+    try:
+        notification = Notification.objects.get(procedure_id=id)
+        logging.info("we finished getting the notification")
+        response = {'status': 'SUCCESS',
+            'data': [notification, ],
+        }
+    except Exception, e:
+        et, val, tb = sys.exc_info()
+        trace = traceback.format_tb(tb)
+        error = "Exception : %s %s %s" % (et, val, trace[0])
+        for tbm in trace:
+            logging.error(tbm)
+        logging.error("Got exception while fetching notification: %s" % e)
+        response = {'status': 'FAILURE',
+            'data': "Problem while getting notification: %s" % e,
+        }
+    return HttpResponse(response, mimetype=("application/json; charset=utf-8"))
+
+
 
 @enable_logging
 def notification_list(request):
@@ -1232,5 +1261,4 @@ def notification_list(request):
             'status': 'FAILURE',
             'data': "Problem while getting notification list: %s" % e,
         }
-    return HttpResponse(response, mimetype=("application/json; charset=" +
-                                        settings.DEFAULT_CHARSET))
+    return HttpResponse(response, mimetype=("application/json; charset=utf-8"))
