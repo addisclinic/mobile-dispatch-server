@@ -21,10 +21,10 @@ def create_notification():
     n.save()
 
 if __name__ == "__main__":
-for i in range(100):
-    create_notification()
-for i in range(10):
-    n = Notification(patient=PATIENT, client=CLIENT, procedure_id=PROCEDURE,
-        message=MESSAGE, delivered=False)
-    n.save()
+    for i in range(100):
+        create_notification()
+    for i in range(10):
+        n = Notification(patient=PATIENT, client=CLIENT, procedure_id=PROCEDURE,
+            message=MESSAGE, delivered=False)
+        n.save()
 
