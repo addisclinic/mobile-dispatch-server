@@ -31,12 +31,16 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+if DEBUG:
+    DATABASE_ENGINE = 'sqlite3'
+    DATABASE_NAME = 'dev-db'
 ### Database settings
-DATABASE_ENGINE = os.environ['DATABASE_ENGINE'] or ''
-"""'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'."""
+else:
+    DATABASE_ENGINE = os.environ['DATABASE_ENGINE'] or ''
+    """'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'."""
 
-DATABASE_NAME = ''
-"""Or path to database file if using sqlite3."""
+    DATABASE_NAME = ''
+    """Or path to database file if using sqlite3."""
 
 DATABASE_USER = ''
 """Not used with sqlite3."""

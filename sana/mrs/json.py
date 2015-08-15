@@ -40,6 +40,7 @@ from django.http import HttpResponse
 from django import forms
 from django.core.mail import send_mail
 from django.shortcuts import render_to_response
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
 from sana.mrs import openmrs
 from sana.mrs.api import register_saved_procedure
@@ -1206,6 +1207,34 @@ def notification_get_bypt(request, id):
         response = {'status': 'SUCCESS',
                 'data': cjson.decode(notification.to_json()),
             }
+    except ObjectDoesNotExist as e:
+        et, val, tb = sys.exc_info()
+        trace = traceback.format_tb(tb)
+        error = "Exception : %s %s %s" % (et, val, trace[0])
+        for tbm in trace:
+            logging.error(tbm)
+        logging.error("Got exception while fetching notification: %s" % e)
+        response = {'status': 'FAILURE',
+            'data': "Problem while getting notification: %s" % e,
+        }
+    except MultipleObjectsReturned:
+        try:
+            notification = Notification.objects.filter(patient_id=id)
+            logging.info("we finished getting the notification")
+            response = {'status': 'SUCCESS',
+                    'data': [cjson.decode(d.to_json()) for d in notification],
+            }
+        except Exception as e:
+            et, val, tb = sys.exc_info()
+            trace = traceback.format_tb(tb)
+            error = "Exception : %s %s %s" % (et, val, trace[0])
+            for tbm in trace:
+                logging.error(tbm)
+            logging.error("Got exception while fetching notification: %s" % e)
+            response = {'status': 'FAILURE',
+                'data': "Problem while getting notification: %s" % e,
+            }
+
     except Exception, e:
         et, val, tb = sys.exc_info()
         trace = traceback.format_tb(tb)
@@ -1235,6 +1264,34 @@ def notification_get_byproc(request, id):
         response = {'status': 'SUCCESS',
                 'data': cjson.decode(notification.to_json()),
         }
+    except ObjectDoesNotExist as e:
+        et, val, tb = sys.exc_info()
+        trace = traceback.format_tb(tb)
+        error = "Exception : %s %s %s" % (et, val, trace[0])
+        for tbm in trace:
+            logging.error(tbm)
+        logging.error("Got exception while fetching notification: %s" % e)
+        response = {'status': 'FAILURE',
+            'data': "Problem while getting notification: %s" % e,
+        }
+    except MultipleObjectsReturned:
+        try:
+            notification = Notification.objects.filter(procedure_id=id)
+            logging.info("we finished getting the notification")
+            response = {'status': 'SUCCESS',
+                    'data': [cjson.decode(d.to_json()) for d in notification],
+            }
+        except Exception as e:
+            et, val, tb = sys.exc_info()
+            trace = traceback.format_tb(tb)
+            error = "Exception : %s %s %s" % (et, val, trace[0])
+            for tbm in trace:
+                logging.error(tbm)
+            logging.error("Got exception while fetching notification: %s" % e)
+            response = {'status': 'FAILURE',
+                'data': "Problem while getting notification: %s" % e,
+            }
+
     except Exception, e:
         et, val, tb = sys.exc_info()
         trace = traceback.format_tb(tb)
