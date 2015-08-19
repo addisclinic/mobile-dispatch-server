@@ -1202,40 +1202,12 @@ def notification_get_bypt(request, id):
     '''
     logging.info("entering get notification by patient procedure")
     try:
-        notification = Notification.objects.get(patient_id=id)
+        notification = Notification.objects.filter(patient_id=id)
         logging.info("we finished getting the notification")
         response = {'status': 'SUCCESS',
-                'data': cjson.decode(notification.to_json()),
-            }
-    except ObjectDoesNotExist as e:
-        et, val, tb = sys.exc_info()
-        trace = traceback.format_tb(tb)
-        error = "Exception : %s %s %s" % (et, val, trace[0])
-        for tbm in trace:
-            logging.error(tbm)
-        logging.error("Got exception while fetching notification: %s" % e)
-        response = {'status': 'FAILURE',
-            'data': "Problem while getting notification: %s" % e,
+                'data': [cjson.decode(d.to_json()) for d in notification],
         }
-    except MultipleObjectsReturned:
-        try:
-            notification = Notification.objects.filter(patient_id=id)
-            logging.info("we finished getting the notification")
-            response = {'status': 'SUCCESS',
-                    'data': [cjson.decode(d.to_json()) for d in notification],
-            }
-        except Exception as e:
-            et, val, tb = sys.exc_info()
-            trace = traceback.format_tb(tb)
-            error = "Exception : %s %s %s" % (et, val, trace[0])
-            for tbm in trace:
-                logging.error(tbm)
-            logging.error("Got exception while fetching notification: %s" % e)
-            response = {'status': 'FAILURE',
-                'data': "Problem while getting notification: %s" % e,
-            }
-
-    except Exception, e:
+    except Exception as e:
         et, val, tb = sys.exc_info()
         trace = traceback.format_tb(tb)
         error = "Exception : %s %s %s" % (et, val, trace[0])
@@ -1259,12 +1231,12 @@ def notification_get_byproc(request, id):
     '''
     logging.info("entering get notification by proc procedure")
     try:
-        notification = Notification.objects.get(procedure_id=id)
+        notification = Notification.objects.filter(procedure_id=id)
         logging.info("we finished getting the notification")
         response = {'status': 'SUCCESS',
-                'data': cjson.decode(notification.to_json()),
+                'data': [cjson.decode(d.to_json()) for d in notification],
         }
-    except ObjectDoesNotExist as e:
+    except Exception as e:
         et, val, tb = sys.exc_info()
         trace = traceback.format_tb(tb)
         error = "Exception : %s %s %s" % (et, val, trace[0])
@@ -1274,34 +1246,7 @@ def notification_get_byproc(request, id):
         response = {'status': 'FAILURE',
             'data': "Problem while getting notification: %s" % e,
         }
-    except MultipleObjectsReturned:
-        try:
-            notification = Notification.objects.filter(procedure_id=id)
-            logging.info("we finished getting the notification")
-            response = {'status': 'SUCCESS',
-                    'data': [cjson.decode(d.to_json()) for d in notification],
-            }
-        except Exception as e:
-            et, val, tb = sys.exc_info()
-            trace = traceback.format_tb(tb)
-            error = "Exception : %s %s %s" % (et, val, trace[0])
-            for tbm in trace:
-                logging.error(tbm)
-            logging.error("Got exception while fetching notification: %s" % e)
-            response = {'status': 'FAILURE',
-                'data': "Problem while getting notification: %s" % e,
-            }
 
-    except Exception, e:
-        et, val, tb = sys.exc_info()
-        trace = traceback.format_tb(tb)
-        error = "Exception : %s %s %s" % (et, val, trace[0])
-        for tbm in trace:
-            logging.error(tbm)
-        logging.error("Got exception while fetching notification: %s" % e)
-        response = {'status': 'FAILURE',
-            'data': "Problem while getting notification: %s" % e,
-        }
     return HttpResponse(cjson.encode(response), mimetype=("application/json; charset=utf-8"))
 
 

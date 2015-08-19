@@ -215,6 +215,7 @@ class Notification(models.Model):
     """
     class Meta:
         app_label = 'mrs'
+        ordering = ['-created']
 
     # some identifier that tells us which client it is (phone #?)
     client = models.CharField(max_length=512)
