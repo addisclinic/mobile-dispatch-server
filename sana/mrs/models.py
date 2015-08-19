@@ -223,13 +223,15 @@ class Notification(models.Model):
 
     message = models.TextField()
     delivered = models.BooleanField()
+    created = models.DateTimeField(auto_now_add=True)
 
     def to_json(self):
         return cjson.encode({
             'phoneId': self.client,
             'message': self.message,
             'procedureId': self.procedure_id,
-            'patientId': self.patient_id
+            'patientId': self.patient_id,
+            'created': str(self.created)
             })
 
     def flush(self):
