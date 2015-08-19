@@ -31,6 +31,10 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+DATABASE_ENGINE = 'sqlite3'
+DATABASE_NAME = 'dev-db'
+
+'''
 ### Database settings
 DATABASE_ENGINE = os.environ['DATABASE_ENGINE'] or ''
 """'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'."""
@@ -49,6 +53,7 @@ DATABASE_HOST = ''
 
 DATABASE_PORT = ''
 """Set to empty string for default. Not used with sqlite3."""
+'''
 
 TIME_ZONE = 'America/Chicago'
 """Local time zone for this installation. Choices can be found here:
@@ -123,6 +128,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
+    'south',
 )
 """Don't touch this unless you know what you are doing."""
 
