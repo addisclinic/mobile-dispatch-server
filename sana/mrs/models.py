@@ -227,7 +227,7 @@ class Notification(models.Model):
     # some identifier that tells us which client it is (phone #?)
     client = models.ForeignKey('Client')
     patient_id = models.ForeignKey('Patient')
-    procedure_id = models.ForeginKey('Procedure')
+    procedure_id = models.ForeignKey('Procedure')
 
     message = models.TextField()
     delivered = models.BooleanField()
