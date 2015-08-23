@@ -13,7 +13,7 @@ PROCEDURE = 1
 MESSAGE = "".join([random.choice(string.digits) for i in xrange(100)])
 
 class Command(BaseCommand):
-    def create_notification():
+    def _create_notification():
         patient = Patient(name="".join([random.choice(string.letters) for i in xrange(10)]),
             remote_identifier="".join([random.choice(string.digits) for i in xrange(10)]))
         patient.save()
@@ -34,3 +34,4 @@ class Command(BaseCommand):
 
     def handle(self,*args,**kwargs):
         for i in range(100):
+            self._create_notification()
