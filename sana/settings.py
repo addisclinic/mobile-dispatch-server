@@ -111,6 +111,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
     'sana.mrs.util.LoggingMiddleware',
 )
 """Don't touch this unless you know what you are doing."""
@@ -132,7 +133,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
-    'django.contrib.messages.middleware.MessageMiddleware',
     'south',
 )
 """Don't touch this unless you know what you are doing."""
