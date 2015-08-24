@@ -101,10 +101,10 @@ trailing slash. Examples: "http://foo.com/media/", "/media/".
 SECRET_KEY = 'b#%x46e0f=jx%_#-a9b5(4bvxlfz-obm*gs4iu3i6k!034j(mx'
 """Make this unique, and don't share it with anybody. Seriously."""
 
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.load_template_source',
-    'django.template.loaders.app_directories.load_template_source',
-)
+TEMPLATE_LOADERS = [('django.template.loaders.cached.Loader', (
+            'django.template.loaders.filesystem.Loader',
+            'django.template.loaders.app_directories.Loader',
+)),]
 """List of callables that know how to import templates from various sources."""
 
 MIDDLEWARE_CLASSES = (
