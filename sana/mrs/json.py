@@ -1202,7 +1202,7 @@ def notification_get_bypt(request, id):
     '''
     logging.info("entering get notification by patient procedure")
     try:
-        notification = Notification.objects.filter(patient_id=id)
+        notification = Notification.objects.filter(patient_id__remote_identifier__contains=id)
         logging.info("we finished getting the notification")
         response = {'status': 'SUCCESS',
                 'data': [cjson.decode(d.to_json()) for d in notification],
@@ -1231,7 +1231,7 @@ def notification_get_byproc(request, id):
     '''
     logging.info("entering get notification by proc procedure")
     try:
-        notification = Notification.objects.filter(procedure_id=id)
+        notification = Notification.objects.filter(procedure_id__procedure_guid__contains=id)
         logging.info("we finished getting the notification")
         response = {'status': 'SUCCESS',
                 'data': [cjson.decode(d.to_json()) for d in notification],

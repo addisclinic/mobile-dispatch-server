@@ -33,6 +33,13 @@ MANAGERS = ADMINS
 
 DATABASE_NAME='dev.db'
 DATABASE_ENGINE='sqlite3'
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'dev.db',
+        'USER': 'mfromano',
+    }
+}
 ### Database settings
 # DATABASE_ENGINE = os.environ['DATABASE_ENGINE'] or ''
 # """'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'."""
