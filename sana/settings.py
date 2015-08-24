@@ -132,6 +132,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
+    'django.contrib.messages.middleware.MessageMiddleware',
     'south',
 )
 """Don't touch this unless you know what you are doing."""
