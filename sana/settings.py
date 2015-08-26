@@ -31,10 +31,13 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+ALLOWED_HOSTS = ['']
+
 DATABASES = {
     'default': {
-        'ENGINE': os.environ['DATABASE_ENGINE'],
-        'NAME': '',
+        # 'ENGINE': os.environ['DATABASE_ENGINE'],
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'dev.db',
         'USER': '',
         'PASSWORD': '',
         'HOST': '',
