@@ -72,7 +72,7 @@ def render_json_response(data):
         data
             message content
     """
-    resp = HttpResponse(data, mimetype=("application/json; charset=" +
+    resp = HttpResponse(data, content_type=("application/json; charset=" +
                                         settings.DEFAULT_CHARSET))
     resp['X-JSON'] = data
     return resp
@@ -1217,7 +1217,7 @@ def notification_get_bypt(request, id):
         response = {'status': 'FAILURE',
             'data': "Problem while getting notification: %s" % e,
         }
-    return HttpResponse(cjson.encode(response), mimetype=("application/json; charset=utf-8"))
+    return HttpResponse(cjson.encode(response), content_type=("application/json; charset=utf-8"))
 
 
 @enable_logging
@@ -1247,7 +1247,7 @@ def notification_get_byproc(request, id):
             'data': "Problem while getting notification: %s" % e,
         }
 
-    return HttpResponse(cjson.encode(response), mimetype=("application/json; charset=utf-8"))
+    return HttpResponse(cjson.encode(response), content_type=("application/json; charset=utf-8"))
 
 
 
@@ -1283,4 +1283,4 @@ def notification_list(request):
             'status': 'FAILURE',
             'data': "Problem while getting notification list: %s" % e,
         }
-    return HttpResponse(cjson.encode(response), mimetype=("application/json; charset=utf-8"))
+    return HttpResponse(cjson.encode(response), content_type=("application/json; charset=utf-8"))

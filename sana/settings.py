@@ -35,9 +35,9 @@ ALLOWED_HOSTS = ['']
 
 DATABASES = {
     'default': {
-        'ENGINE': os.environ['DATABASE_ENGINE'],
-        # 'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '',
+        # 'ENGINE': os.environ['DATABASE_ENGINE'],
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'dev.db',
         'USER': '',
         'PASSWORD': '',
         'HOST': '',
@@ -119,7 +119,6 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.sites',
     'django.contrib.admin',
-    'south',
 )
 """Don't touch this unless you know what you are doing."""
 

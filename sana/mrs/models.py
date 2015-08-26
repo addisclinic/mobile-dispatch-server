@@ -230,7 +230,7 @@ class Notification(models.Model):
     procedure_id = models.ForeignKey('Procedure')
 
     message = models.TextField()
-    delivered = models.BooleanField()
+    delivered = models.BooleanField(default=False)
     created = models.DateTimeField(auto_now_add=True)
 
     def to_json(self):
@@ -255,7 +255,7 @@ class QueueElement(models.Model):
     procedure = models.ForeignKey('Procedure')
     saved_procedure = models.ForeignKey('SavedProcedure')
 
-    finished = models.BooleanField()
+    finished = models.BooleanField(default=False)
 
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
