@@ -40,6 +40,7 @@ from django.http import HttpResponse
 from django import forms
 from django.core.mail import send_mail
 from django.shortcuts import render_to_response
+from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
 from sana.mrs import openmrs
 from sana.mrs.api import register_saved_procedure
@@ -47,6 +48,7 @@ from sana.mrs.api import register_binary
 from sana.mrs.api import register_binary_chunk
 from sana.mrs.api import register_client_events
 from sana.mrs.util import enable_logging, mark
+from django.core import serializers
 from sana.mrs.models import Notification, SavedProcedure
 
 MSG_MDS_ERROR = 'Dispatch Error'
@@ -70,7 +72,7 @@ def render_json_response(data):
         data
             message content
     """
-    resp = HttpResponse(data, mimetype=("application/json; charset=" +
+    resp = HttpResponse(data, content_type=("application/json; charset=" +
                                         settings.DEFAULT_CHARSET))
     resp['X-JSON'] = data
     return resp
@@ -1189,5 +1191,96 @@ def syc_encounters(request, patient_id, encounters=None):
     logging.info("finished sync_encounters")
     return render_json_response(response)
 
+@enable_logging
+def notification_get_bypt(request, id):
+    '''
+    Request Params:
+        username
+            valid username
+        password
+            valid password
+    '''
+    logging.info("entering get notification by patient procedure")
+    try:
+        notification = Notification.objects.filter(patient_id__remote_identifier__contains=id)
+        logging.info("we finished getting the notification")
+        response = {'status': 'SUCCESS',
+                'data': [cjson.decode(d.to_json()) for d in notification],
+        }
+    except Exception as e:
+        et, val, tb = sys.exc_info()
+        trace = traceback.format_tb(tb)
+        error = "Exception : %s %s %s" % (et, val, trace[0])
+        for tbm in trace:
+            logging.error(tbm)
+        logging.error("Got exception while fetching notification: %s" % e)
+        response = {'status': 'FAILURE',
+            'data': "Problem while getting notification: %s" % e,
+        }
+    return HttpResponse(cjson.encode(response), content_type=("application/json; charset=utf-8"))
 
 
+@enable_logging
+def notification_get_byproc(request, id):
+    '''
+    Request Params:
+    username
+        valid username
+    password
+        valid password
+    '''
+    logging.info("entering get notification by proc procedure")
+    try:
+        notification = Notification.objects.filter(procedure_id__procedure_guid__contains=id)
+        logging.info("we finished getting the notification")
+        response = {'status': 'SUCCESS',
+                'data': [cjson.decode(d.to_json()) for d in notification],
+        }
+    except Exception as e:
+        et, val, tb = sys.exc_info()
+        trace = traceback.format_tb(tb)
+        error = "Exception : %s %s %s" % (et, val, trace[0])
+        for tbm in trace:
+            logging.error(tbm)
+        logging.error("Got exception while fetching notification: %s" % e)
+        response = {'status': 'FAILURE',
+            'data': "Problem while getting notification: %s" % e,
+        }
+
+    return HttpResponse(cjson.encode(response), content_type=("application/json; charset=utf-8"))
+
+
+
+@enable_logging
+def notification_list(request):
+    """For synching notifications with mobile clients.
+
+    Request Params
+        username
+            A valid username.
+        password
+            A valid password.
+
+    Parameters:
+        request
+            A client request for patient list
+    """
+    logging.info("entering notification list proc")
+    try:
+        data = Notification.objects.all()
+        logging.info("we finished getting the notification list")
+        response = {'status': 'SUCCESS',
+            'data': [cjson.decode(d.to_json()) for d in data],
+        }
+    except Exception, e:
+        et, val, tb = sys.exc_info()
+        trace = traceback.format_tb(tb)
+        error = "Exception : %s %s %s" % (et, val, trace[0])
+        for tbm in trace:
+            logging.error(tbm)
+        logging.error("Got exception while fetching notification list: %s" % e)
+        response = {
+            'status': 'FAILURE',
+            'data': "Problem while getting notification list: %s" % e,
+        }
+    return HttpResponse(cjson.encode(response), content_type=("application/json; charset=utf-8"))

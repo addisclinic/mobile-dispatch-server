@@ -1,2 +1,4 @@
 # Compiled python files
 *.pyc
+dev.db
+sana/mrs/migrations

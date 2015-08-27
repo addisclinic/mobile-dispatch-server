@@ -46,6 +46,10 @@ class Patient(models.Model):
     """ Someone about whom data is collected """
     class Meta:
         app_label = 'mrs'
+
+    def __unicode__(self):
+        return self.remote_identifier
+
     name = models.CharField(max_length=512)
 
     # the remote record identifier for the Patient, i.e. OpenMRS ID
@@ -59,6 +63,9 @@ class Procedure(models.Model):
     """
     class Meta:
         app_label = 'mrs'
+
+    def __unicode__(self):
+        return self.procedure_guid
 
     title = models.CharField(max_length=255)
     procedure_guid = models.CharField(max_length=255, unique=True)
@@ -215,21 +222,24 @@ class Notification(models.Model):
     """
     class Meta:
         app_label = 'mrs'
+        ordering = ['-created']
 
     # some identifier that tells us which client it is (phone #?)
-    client = models.CharField(max_length=512)
-    patient_id = models.CharField(max_length=512)
-    procedure_id = models.CharField(max_length=512)
+    client = models.ForeignKey('Client')
+    patient_id = models.ForeignKey('Patient')
+    procedure_id = models.ForeignKey('Procedure')
 
     message = models.TextField()
-    delivered = models.BooleanField()
+    delivered = models.BooleanField(default=False)
+    created = models.DateTimeField(auto_now_add=True)
 
     def to_json(self):
         return cjson.encode({
             'phoneId': self.client,
             'message': self.message,
             'procedureId': self.procedure_id,
-            'patientId': self.patient_id
+            'patientId': self.patient_id,
+            'created': str(self.created)
             })
 
     def flush(self):
@@ -245,7 +255,7 @@ class QueueElement(models.Model):
     procedure = models.ForeignKey('Procedure')
     saved_procedure = models.ForeignKey('SavedProcedure')
 
-    finished = models.BooleanField()
+    finished = models.BooleanField(default=False)
 
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
