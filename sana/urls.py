@@ -5,7 +5,7 @@
 :Version: 1.1
 """
 
-from django.conf.urls.defaults import patterns, url
+from django.conf.urls import patterns, url
 
 # Uncomment the next two lines to enable the admin:
 #from django.contrib import admin
@@ -48,7 +48,26 @@ urlpatterns = patterns(
 #     url(r'^json/notifications/$',
 #         'sana.mrs.json.notification_list',
 #         name="sana-json-notification-list"),
+# 
+# Next three urls are notification endpoints. They can return a list,
+# notification for a patient, or a notification with a given procedure number
+#
+    url(r'^json/notifications/list/$',
+        'sana.mrs.json.notification_list',
+        name='sana-json-notification-list'),
+    
+    url(
+        r'^json/notifications/patient/(?P<id>[0-9-]+)/$',
+        'sana.mrs.json.notification_get_bypt',
+        name='sana-json-notification-get-bypt'
+        ),
 
+    url(
+        r'^json/notifications/procedure/(?P<id>[0-9-]+)/$',
+        'sana.mrs.json.notification_get_byproc',
+        name='sana-json-notification-get-byproc'
+        ),
+    
      url(r'^json/patient/list/$',
          'sana.mrs.json.patient_list',
          name="sana-json-patient-list"),

@@ -3,7 +3,7 @@ sudo: false
 python:
   - "2.7"
 env:
-  - DATABASE_ENGINE='sqlite3'
+  - DATABASE_ENGINE='django.db.backends.sqlite3'
 install:
   - pip install -r reqs/travis.txt
 cache:
@@ -11,6 +11,6 @@ cache:
   - $HOME/.pip-cache/
   - /home/travis/virtualenv/python2.7.9
 script:
-  - coverage run --source=sana sana/manage.py test
+  - coverage run --source=sana manage.py test
 after_success:
   - coveralls

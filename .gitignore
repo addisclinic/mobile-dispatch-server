@@ -1,4 +1,4 @@
 # Compiled python files
 *.pyc
-
-sqlite.db
+dev.db
+sana/mrs/migrations

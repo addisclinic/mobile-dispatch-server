@@ -94,7 +94,7 @@ def procedure_submit(request):
                               {'form': form})
 
 def list_notifications(request):
-    """Queries the db for all notifiactions"""
+    """Queries the db for all notifications"""
     notifications = Notification.objects.all()
     return render_to_response('notifications.html',
                               {'notifications': notifications})
