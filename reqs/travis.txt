@@ -1,3 +1,4 @@
 -r prod.txt
 
 coveralls==1.0a2
+haralyzer==1.4.3
