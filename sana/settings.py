@@ -36,8 +36,7 @@ ALLOWED_HOSTS = ['']
 DATABASES = {
     'default': {
         'ENGINE': os.environ['DATABASE_ENGINE'],
-        # 'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': '',
+        'NAME': os.environ.get('DATABASE_NAME'),
         'USER': '',
         'PASSWORD': '',
         'HOST': '',
