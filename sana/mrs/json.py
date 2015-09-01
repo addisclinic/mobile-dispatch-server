@@ -203,7 +203,7 @@ class NotificationSubmitForm(forms.Form):
     ============== =========================================
          Label                    Description
     ============== =========================================
-    client_name    the client identifier
+    client_name    the client identifier    
     procedure_guid the procedure identifier, usually a title
     message        a message
     patient_id     the patient identifier
