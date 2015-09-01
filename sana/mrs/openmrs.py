@@ -20,6 +20,7 @@ from sana.mrs import MultipartPostHandler
 from sana.mrs.util import enable_logging
 from sana.mrs.util import mark
 
+
 class OpenMRS(object):
     """Utility class for remote communication with OpenMRS """
 
