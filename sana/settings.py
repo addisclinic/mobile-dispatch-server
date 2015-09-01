@@ -33,7 +33,7 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-ALLOWED_HOSTS = ['']
+ALLOWED_HOSTS = ['*']
 
 DATABASES = {
     'default': {
@@ -42,7 +42,7 @@ DATABASES = {
         'USER': '',
         'PASSWORD': '',
         'HOST': '',
-        'PORt': '',
+        'PORT': '',
     }
 }
 
