@@ -49,7 +49,7 @@ from sana.mrs.api import register_binary_chunk
 from sana.mrs.api import register_client_events
 from sana.mrs.util import enable_logging, mark
 from django.core import serializers
-from sana.mrs.models import Notification, SavedProcedure
+from sana.mrs.models import Notification, SavedProcedure, Patient, Procedure
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
@@ -217,7 +217,7 @@ class NotificationSubmitForm(forms.Form):
     password = forms.CharField(required=True, max_length=256)
     patient_id = forms.CharField(required=True, max_length=512)
     procedure_guid = forms.CharField(required=True, max_length=512)
-    message = forms.TextField(required=True)
+    message = forms.CharField(required=True)
     client_name = forms.CharField(max_length=255, required=False, initial='')
 
 
