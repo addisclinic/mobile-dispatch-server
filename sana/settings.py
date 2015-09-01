@@ -24,6 +24,8 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 ''' Template debug level. Should be set to False in production environments. '''
 
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
 )
