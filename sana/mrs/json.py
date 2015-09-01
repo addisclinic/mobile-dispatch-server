@@ -211,7 +211,7 @@ class NotificationSubmitForm(forms.Form):
     password       a valid password
     ============== =========================================
 
-    :Authors: Michael Romano
+    :Authors: Michael Romano, Sana dev team
     """
     username = forms.CharField(required=True, max_length=256)
     password = forms.CharField(required=True, max_length=256)
@@ -228,7 +228,7 @@ def procedure_submit(request):
 
     Parameters:
         request
-            The data uploaded from the client.
+            The data uplo aded from the client.
     """
     try:
         logging.info("Received saved procedure submission.")
@@ -925,15 +925,27 @@ def notification_submit(request):
 
     logging.info("Notification submit received")
 
+
+    # Get corresponding objects
+    try:
+        client = Client.objects.get(name=phoneId)
+        procedure = Procedure.objects.get(procedure_guid=caseIdentifier)
+        patient = Patient.objects.get(remote_identifier=patientIdentifier)
+
+    except Exception, e:
+        logging.error("Got error while trying to send notification: %s" % e)
+        response = json_fail('Non-existing client, procedure or patient')
+        return render_json_response(response)
+        
     for key,value in request.REQUEST.items():
         logging.info("Notification submit %s:%s" % (key,value))
 
     response = json_fail('Failed to register notification.')
-    if phoneId and text and caseIdentifier and patientIdentifier:
-        n = Notification(client=phoneId,
-                         patient_id=patientIdentifier,
+    if client and text and patient and procedure:
+        n = Notification(client=client,
+                         patient_id=patient,
                          message=text,
-                         procedure_id=caseIdentifier,
+                         procedure_id=procedure,
                          delivered=delivered)
         n.save()
         try:
