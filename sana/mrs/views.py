@@ -10,6 +10,7 @@ from django import forms
 from sana.mrs.openmrs import sendToOpenMRS
 from sana.mrs.util import enable_logging
 from sana.mrs.models import Notification
+from sana.mrs.util import enable_logging
 
 def chunk( seq, size, pad=None ):
     """Slice a list into consecutive disjoint 'chunks' of
