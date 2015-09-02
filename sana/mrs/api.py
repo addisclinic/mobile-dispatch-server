@@ -15,7 +15,7 @@ from django.conf import settings
 from sana.mrs.models import SavedProcedure, Client, BinaryResource, ClientEventLog
 from sana.mrs import openmrs
 from sana.mrs.media import FFmpeg
-from sana.mrs.util import flush, mark
+from sana.mrs.util import flush, mark, enable_logging
 
 # api.py -- interface-agnostic API methods
 

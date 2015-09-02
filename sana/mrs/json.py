@@ -195,32 +195,6 @@ class ProcedureSubmitForm(forms.Form):
     responses = forms.CharField(required=True)
     phone = forms.CharField(max_length=255, required=False, initial='')
 
-class NotificationSubmitForm(forms.Form):
-    """Http POST form for notification uploads.
-
-    Request Parameters
-
-    ============== =========================================
-         Label                    Description
-    ============== =========================================
-    client_name    the client identifier    
-    procedure_guid the procedure identifier, usually a title
-    message        a message
-    patient_id     the patient identifier
-    username       a valid username
-    password       a valid password
-    ============== =========================================
-
-    :Authors: Michael Romano, Sana dev team
-    """
-    username = forms.CharField(required=True, max_length=256)
-    password = forms.CharField(required=True, max_length=256)
-    patient_id = forms.CharField(required=True, max_length=512)
-    procedure_guid = forms.CharField(required=True, max_length=512)
-    message = forms.CharField(required=True)
-    client_name = forms.CharField(max_length=255, required=False, initial='')
-
-
 @enable_logging
 def procedure_submit(request):
     """Accepts a request to send collected encounter data to the data store.
