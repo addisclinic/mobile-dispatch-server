@@ -895,7 +895,6 @@ def notification_submit(request):
     text = request.REQUEST.get("notificationText", None)
     caseIdentifier = request.REQUEST.get("caseIdentifier", None)
     patientIdentifier = request.REQUEST.get("patientIdentifier", None)
-    print phoneId, text, caseIdentifier, patientIdentifier
     delivered = False
 
     logging.info("Notification submit received")
