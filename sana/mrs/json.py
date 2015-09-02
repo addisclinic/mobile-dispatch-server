@@ -1229,4 +1229,3 @@ def syc_encounters(request, patient_id, encounters=None):
 
     logging.info("finished sync_encounters")
     return render_json_response(response)
-

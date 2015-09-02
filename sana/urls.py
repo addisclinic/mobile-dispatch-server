@@ -56,20 +56,16 @@ urlpatterns = patterns(
 # Next three urls are notification endpoints. They can return a list,
 # notification for a patient, or a notification with a given procedure number
 #
-    url(r'^json/notifications/list/$',
-        'sana.mrs.json.notification_list',
-        name='sana-json-notification-list'),
-    
     url(
-        r'^json/notifications/patient/(?P<id>[0-9-]+)/$',
-        'sana.mrs.json.notification_get_bypt',
-        name='sana-json-notification-get-bypt'
+        r'^notifications/patient/(?P<id>[0-9-]+)/$',
+        'sana.mrs.api.notification_get_bypt',
+        name='sana-api-notification-get-bypt'
         ),
 
     url(
-        r'^json/notifications/procedure/(?P<id>[0-9-]+)/$',
-        'sana.mrs.json.notification_get_byproc',
-        name='sana-json-notification-get-byproc'
+        r'^notifications/procedure/(?P<id>[0-9-]+)/$',
+        'sana.mrs.api.notification_get_byproc',
+        name='sana-api-notification-get-byproc'
         ),
     
      url(r'^json/patient/list/$',
