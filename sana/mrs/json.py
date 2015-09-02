@@ -196,7 +196,7 @@ class ProcedureSubmitForm(forms.Form):
     phone = forms.CharField(max_length=255, required=False, initial='')
 
 class NotificationSubmitForm(forms.Form):
-    """Http POST form for encounter uploads.
+    """Http POST form for notification uploads.
 
     Request Parameters
 
