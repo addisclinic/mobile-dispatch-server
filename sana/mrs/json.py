@@ -49,7 +49,7 @@ from sana.mrs.api import register_binary_chunk
 from sana.mrs.api import register_client_events
 from sana.mrs.util import enable_logging, mark
 from django.core import serializers
-from sana.mrs.models import Notification, SavedProcedure, Patient, Procedure
+from sana.mrs.models import Notification, SavedProcedure, Patient, Procedure, Client
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
@@ -895,10 +895,10 @@ def notification_submit(request):
     text = request.REQUEST.get("notificationText", None)
     caseIdentifier = request.REQUEST.get("caseIdentifier", None)
     patientIdentifier = request.REQUEST.get("patientIdentifier", None)
+    print phoneId, text, caseIdentifier, patientIdentifier
     delivered = False
 
     logging.info("Notification submit received")
-
 
     # Get corresponding objects
     try:
