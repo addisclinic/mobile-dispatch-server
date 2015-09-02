@@ -41,6 +41,10 @@ urlpatterns = patterns(
         'sana.mrs.json.notification_submit',
         name="sana-api-notification-submit"),
 
+    url(r'^notifications/submit/form/$',
+        'sana.mrs.views.notification_submit',
+        name="sana-api-notification-submit-form"),
+
     url(r'^notifications/submit/email/$',
         'sana.mrs.json.email_notification_submit',
         name="sana-api-email-notification-submit"),

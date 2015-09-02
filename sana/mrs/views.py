@@ -93,6 +93,9 @@ def procedure_submit(request):
     return render_to_response("procedure_submit.html",
                               {'form': form})
 
+def notification_submit(request):
+    return render_to_response("notification_submit.html")
+
 def list_notifications(request):
     """Queries the db for all notifications"""
     notifications = Notification.objects.all()
