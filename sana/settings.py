@@ -24,6 +24,8 @@ DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 ''' Template debug level. Should be set to False in production environments. '''
 
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
 )
@@ -31,16 +33,16 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
-ALLOWED_HOSTS = ['']
+ALLOWED_HOSTS = ['*']
 
 DATABASES = {
     'default': {
-        'ENGINE': os.environ['DATABASE_ENGINE'],
-        'NAME': os.environ.get('DATABASE_NAME'),
+        'ENGINE': os.environ.get('DATABASE_ENGINE') or 'django.db.backends.sqlite3',
+        'NAME': os.environ.get('DATABASE_NAME') or './dev.db',
         'USER': '',
         'PASSWORD': '',
         'HOST': '',
-        'PORt': '',
+        'PORT': '',
     }
 }
 
@@ -104,8 +106,23 @@ MIDDLEWARE_CLASSES = (
 ROOT_URLCONF = 'sana.urls'
 """Don't touch this unless you know what you are doing."""
 
-TEMPLATE_DIRS = (
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [
+            os.path.join(BASE_DIR, '/templates'),
+        ],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+            ],
+        },
+    },
+]
 """Put strings here, like "/home/html/django_templates" or
 "C:/www/django/templates". Always use forward slashes, even on Windows. Don't
 forget to use absolute paths, not relative paths.For a typical Sana

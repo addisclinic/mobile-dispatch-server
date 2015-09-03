@@ -15,7 +15,7 @@ from django.conf import settings
 from sana.mrs.models import SavedProcedure, Client, BinaryResource, ClientEventLog
 from sana.mrs import openmrs
 from sana.mrs.media import FFmpeg
-from sana.mrs.util import flush, mark
+from sana.mrs.util import flush, mark, enable_logging
 
 # api.py -- interface-agnostic API methods
 
@@ -521,3 +521,80 @@ def convert_binary(binary):
     result, message = FFmpeg().convert(binary, type, extension)
     logging.debug('FFmpeg: %s %s' % (result, message))
     return result
+
+@enable_logging
+def notification_get_bypt(request, id):
+    '''
+    Request Params:
+        username
+            valid username
+        password
+            valid password
+    '''
+    logging.info("entering get notification by patient procedure")
+    username = request.REQUEST.get('username',None)
+    password = request.REQUEST.get('password',None)
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        try:
+            notification = Notification.objects.filter(patient_id__remote_identifier__contains=id)
+            logging.info("we finished getting the notification")
+            response = {'status': 'SUCCESS',
+                    'data': [cjson.decode(d.to_json()) for d in notification],
+            }
+        except Exception as e:
+            et, val, tb = sys.exc_info()
+            trace = traceback.format_tb(tb)
+            error = "Exception : %s %s %s" % (et, val, trace[0])
+            for tbm in trace:
+                logging.error(tbm)
+            logging.error("Got exception while fetching notification: %s" % e)
+            response = {'status': 'FAILURE',
+                'data': "Problem while getting notification: %s" % e,
+            }
+    else:
+        logging.error('User not authenticated')
+        response = {
+            'status': 'FAILURE',
+            'data': 'User not authenticated',
+        }
+    return HttpResponse(cjson.encode(response), content_type=("application/json; charset=utf-8"))
+
+
+@enable_logging
+def notification_get_byproc(request, id):
+    '''
+    Request Params:
+    username
+        valid username
+    password
+        valid password
+    '''
+    logging.info("entering get notification by proc procedure")
+    username = request.REQUEST.get('username',None)
+    password = request.REQUEST.get('password',None)
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        try:
+            notification = Notification.objects.filter(procedure_id__procedure_guid__contains=id)
+            logging.info("we finished getting the notification")
+            response = {'status': 'SUCCESS',
+                    'data': [cjson.decode(d.to_json()) for d in notification],
+            }
+        except Exception as e:
+            et, val, tb = sys.exc_info()
+            trace = traceback.format_tb(tb)
+            error = "Exception : %s %s %s" % (et, val, trace[0])
+            for tbm in trace:
+                logging.error(tbm)
+            logging.error("Got exception while fetching notification: %s" % e)
+            response = {'status': 'FAILURE',
+                'data': "Problem while getting notification: %s" % e,
+            }
+    else:
+        logging.error('User not authenticated')
+        response = {
+            'status': 'FAILURE',
+            'data': 'User not authenticated',
+        }
+    return HttpResponse(cjson.encode(response), content_type=("application/json; charset=utf-8"))

@@ -10,6 +10,7 @@ from django import forms
 from sana.mrs.openmrs import sendToOpenMRS
 from sana.mrs.util import enable_logging
 from sana.mrs.models import Notification
+from sana.mrs.util import enable_logging
 
 def chunk( seq, size, pad=None ):
     """Slice a list into consecutive disjoint 'chunks' of
@@ -93,11 +94,53 @@ def procedure_submit(request):
     return render_to_response("procedure_submit.html",
                               {'form': form})
 
+def notification_submit(request):
+    return render_to_response("notification_submit.html")
+
+@enable_logging
 def list_notifications(request):
-    """Queries the db for all notifications"""
-    notifications = Notification.objects.all()
-    return render_to_response('notifications.html',
-                              {'notifications': notifications})
+    """For synching notifications with mobile clients.
+
+    Request Params
+        username
+            A valid username.
+        password
+            A valid password.
+
+    Parameters:
+        request
+            A client request for patient list
+    """
+    logging.info("entering notification list proc")
+
+    username = request.REQUEST.get('username',None)
+    password = request.REQUEST.get('password',None)
+    user = authenticate(username=username, password=password)
+    if user is not None:
+        try:
+            data = Notification.objects.all()
+            logging.info("we finished getting the notification list")
+            response = {'status': 'SUCCESS',
+                'data': [cjson.decode(d.to_json()) for d in data],
+            }
+        except Exception, e:
+            et, val, tb = sys.exc_info()
+            trace = traceback.format_tb(tb)
+            error = "Exception : %s %s %s" % (et, val, trace[0])
+            for tbm in trace:
+                logging.error(tbm)
+            logging.error("Got exception while fetching notification list: %s" % e)
+            response = {
+                'status': 'FAILURE',
+                'data': "Problem while getting notification list: %s" % e,
+            }
+    else:
+        logging.error('User not authenticated')
+        response = {
+            'status': 'FAILURE',
+            'data': 'User not authenticated',
+        }
+    return HttpResponse(cjson.encode(response), content_type=("application/json; charset=utf-8"))
 
 def home(request):
     """Top level url
