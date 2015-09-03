@@ -4,6 +4,7 @@ from django.conf import settings
 from haralyzer import HarParser
 from os import path
 import cjson
+import subprocess
 from pprint import pprint
 
 class APITestCase(unittest.TestCase):
@@ -20,3 +21,13 @@ class APITestCase(unittest.TestCase):
         response = c.post("/json/procedure/submit/", request['postData'])
 
         self.assertEqual(response.status_code, 200)
+
+    def test_upload_notification(self):
+        
+        with open('notification_test.txt') as f:
+            
+            p = subprocess.Popen(f.read(),stdout=subprocess.PIPE,shell=True)
+            
+            output, err = p.communicate()
+        
+        self.assertEqual(cjson.decode(output)['status'], 'SUCCESS')
