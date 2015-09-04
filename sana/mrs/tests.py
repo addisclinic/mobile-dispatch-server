@@ -24,10 +24,10 @@ class APITestCase(unittest.TestCase):
 
     def test_upload_notification(self):
         
-        with open('notification_test.txt') as f:
+        with open(path.join(settings.BASE_DIR, 'data', 'notification_test.txt') as f:
             
             p = subprocess.Popen(f.read(),stdout=subprocess.PIPE,shell=True)
             
-            output, err = p.communicate()
+        output, err = p.communicate()
         
         self.assertEqual(cjson.decode(output)['status'], 'SUCCESS')
