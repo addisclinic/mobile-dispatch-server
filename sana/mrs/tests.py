@@ -3,8 +3,10 @@ from django.utils import unittest
 from django.conf import settings
 from haralyzer import HarParser
 from os import path
+from django.contrib.auth.models import User
 import cjson
 import subprocess
+import requests
 from pprint import pprint
 
 class APITestCase(unittest.TestCase):
@@ -24,10 +26,23 @@ class APITestCase(unittest.TestCase):
 
     def test_upload_notification(self):
         
-        with open(path.join(settings.BASE_DIR, 'data', 'notification_test.txt')) as f:
-            
-            p = subprocess.Popen(f.read(),stdout=subprocess.PIPE,shell=True)
-            
-        output, err = p.communicate()
+        user = User.objects.create_user('John', email=None, password='johnpassword')
+        user.save()
+
+        c = Client()
         
-        self.assertEqual(cjson.decode(output)['status'], 'SUCCESS')
+        c.login(username='John',password='johnpassword')
+
+        url = "/notifications/submit/"
+
+        payload = {"phoneIdentifier": '1234567890',
+                "notificationText": '"Hello, world"',
+                "patientIdentifier": '123456789',
+                "caseIdentifier": '01234'
+        }
+
+        response = c.post(url, data=payload)
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(cjson.decode(response.content)['status'], 'FAILURE')

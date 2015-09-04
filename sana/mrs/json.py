@@ -152,8 +152,8 @@ def validate_credentials(request):
             An authorization check request.
     """
     try:
-        username = request.REQUEST.get("username", None)
-        password = request.REQUEST.get("password", None)
+        username = request.POST.get("username", None)
+        password = request.POST.get("password", None)
         logging.info("username: " + username)
 
         response = ''
@@ -230,7 +230,7 @@ def procedure_submit(request):
                 logging.error("Failed to register procedure: %s" % message)
         else:
             logging.error("Saved procedure submission was invalid, dumping REQUEST.")
-            for k,v in request.REQUEST.items():
+            for k,v in request.POST.items():
                 logging.error("SavedProcedure argument %s:%s" % (k,v))
             response = json_fail("Could not parse submission : missing parts or invalid data?")
 
@@ -891,10 +891,10 @@ def notification_submit(request):
         request
             Incoming http request
     """
-    phoneId = request.REQUEST.get("phoneIdentifier", None)
-    text = request.REQUEST.get("notificationText", None)
-    caseIdentifier = request.REQUEST.get("caseIdentifier", None)
-    patientIdentifier = request.REQUEST.get("patientIdentifier", None)
+    phoneId = request.POST.get("phoneIdentifier", None)
+    text = request.POST.get("notificationText", None)
+    caseIdentifier = request.POST.get("caseIdentifier", None)
+    patientIdentifier = request.POST.get("patientIdentifier", None)
     delivered = False
 
     logging.info("Notification submit received")
