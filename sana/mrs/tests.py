@@ -31,7 +31,7 @@ class APITestCase(unittest.TestCase):
 
         c = Client()
         
-        c.login(username='John',password='johnpassword')
+        self.assertEqual(c.login(username='John',password='johnpassword'), True)
 
         url = "/notifications/submit/"
 
