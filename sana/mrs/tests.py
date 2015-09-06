@@ -38,7 +38,7 @@ class APITestCase(unittest.TestCase):
         payload = {"phoneIdentifier": '1234567890',
                 "notificationText": '"Hello, world"',
                 "patientIdentifier": '123456789',
-                "caseIdentifier": '01234'
+                "caseIdentifier": '01234' 
         }
 
         response = c.post(url, data=payload)
