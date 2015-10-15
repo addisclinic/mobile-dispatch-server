@@ -11,6 +11,8 @@ import logging
 from collections import defaultdict
 
 from django.conf import settings
+from django.contrib.auth import authenticate, login
+from django.http import HttpResponse
 
 from sana.mrs.models import SavedProcedure, Client, BinaryResource, ClientEventLog
 from sana.mrs import openmrs

@@ -1,11 +1,13 @@
 import urllib
 import telnetlib
 import logging
+import cjson
 
 from models import BinaryResource
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from django import forms
+from django.contrib.auth import authenticate, login
 
 from sana.mrs.openmrs import sendToOpenMRS
 from sana.mrs.util import enable_logging
