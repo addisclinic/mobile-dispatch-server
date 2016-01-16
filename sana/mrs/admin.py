@@ -5,7 +5,7 @@
 """
 
 from django.contrib import admin
-from sana.mrs.models import Patient,Procedure,BinaryResource,SavedProcedure,Notification,QueueElement,RequestLog,ClientEventLog
+from mrs.models import Patient,Procedure,BinaryResource,SavedProcedure,Notification,QueueElement,RequestLog,ClientEventLog
 
 class ProcedureAdmin(admin.ModelAdmin):
     pass

@@ -11,7 +11,7 @@ from django.conf.urls import patterns, url
 #from django.contrib import admin
 #admin.autodiscover()
 
-from sana.mrs.models import RequestLog
+from mrs.models import RequestLog
 
 log_list = {
     'queryset': RequestLog.objects.all().order_by('-timestamp'),
@@ -30,23 +30,23 @@ urlpatterns = patterns(
     # (r'^sana/', include('sana.foo.urls')),
 
     url(r'^$',
-        'sana.mrs.views.home',
+        'mrs.views.home',
         name="sana-home"),
 
     url(r'^notifications/$',
-        'sana.mrs.views.list_notifications',
+        'mrs.views.list_notifications',
         name="sana-list-notifications"),
 
     url(r'^notifications/submit/$',
-        'sana.mrs.json.notification_submit',
+        'mrs.json.notification_submit',
         name="sana-api-notification-submit"),
 
     url(r'^notifications/submit/form/$',
-        'sana.mrs.views.notification_submit',
+        'mrs.views.notification_submit',
         name="sana-api-notification-submit-form"),
 
     url(r'^notifications/submit/email/$',
-        'sana.mrs.json.email_notification_submit',
+        'mrs.json.email_notification_submit',
         name="sana-api-email-notification-submit"),
 
 #     url(r'^json/notifications/$',
@@ -58,22 +58,22 @@ urlpatterns = patterns(
 #
     url(
         r'^notifications/patient/(?P<id>[0-9-]+)/$',
-        'sana.mrs.api.notification_get_bypt',
+        'mrs.api.notification_get_bypt',
         name='sana-api-notification-get-bypt'
         ),
 
     url(
         r'^notifications/procedure/(?P<id>[0-9-]+)/$',
-        'sana.mrs.api.notification_get_byproc',
+        'mrs.api.notification_get_byproc',
         name='sana-api-notification-get-byproc'
         ),
     
      url(r'^json/patient/list/$',
-         'sana.mrs.json.patient_list',
+         'mrs.json.patient_list',
          name="sana-json-patient-list"),
 
      url(r'^json/patient/(?P<id>[0-9-]+)/$',
-         'sana.mrs.json.patient_get',
+         'mrs.json.patient_get',
          name="sana-json-patient-get"),
 
      #url(r'^json/procedure/list/$',
@@ -85,31 +85,31 @@ urlpatterns = patterns(
     #    name="sana-json-procedure-get"),
 
     url(r'^json/validate/credentials/$',
-        'sana.mrs.json.validate_credentials',
+        'mrs.json.validate_credentials',
         name = "sana-json-validate-credentials"),
 
     url(r'^procedure/submit/$',
-        'sana.mrs.views.procedure_submit',
+        'mrs.views.procedure_submit',
         name="sana-html-procedure-submit"),
 
     url(r'^json/procedure/submit/$',
-        'sana.mrs.json.procedure_submit',
+        'mrs.json.procedure_submit',
         name="sana-json-procedure-submit"),
 
     url(r'^json/binary/submit/$',
-        'sana.mrs.json.binary_submit',
+        'mrs.json.binary_submit',
         name="sana-json-binary-submit"),
 
     url(r'^json/binarychunk/submit/$',
-        'sana.mrs.json.binarychunk_submit',
+        'mrs.json.binarychunk_submit',
         name="sana-json-binarychunk-submit"),
 
     url(r'^json/textchunk/submit/$',
-        'sana.mrs.json.binarychunk_hack_submit',
+        'mrs.json.binarychunk_hack_submit',
         name="sana-json-binarychunk-hack-submit"),
 
     url(r'^json/eventlog/submit/$',
-        'sana.mrs.json.eventlog_submit',
+        'mrs.json.eventlog_submit',
         name="sana-json-eventlog-submit"),
 
     #Manila Branch  saved procedure syncing
@@ -129,11 +129,11 @@ urlpatterns = patterns(
     # LOGGING
 
     url(r'^log-detail/$',
-        'sana.mrs.util.log_json_detail',
+        'mrs.util.log_json_detail',
         name="log-json-detail-noarg"),
 
     url(r'^log-detail/(?P<log_id>\d+)$',
-        'sana.mrs.util.log_json_detail',
+        'mrs.util.log_json_detail',
         name="log-json-detail"),
 
     url(r'^log/$',

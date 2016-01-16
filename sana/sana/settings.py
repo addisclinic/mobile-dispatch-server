@@ -38,7 +38,7 @@ ALLOWED_HOSTS = ['*']
 DATABASES = {
     'default': {
         'ENGINE': os.environ.get('DATABASE_ENGINE') or 'django.db.backends.sqlite3',
-        'NAME': os.environ.get('DATABASE_NAME') or './dev.db',
+        'NAME': os.environ.get('DATABASE_NAME') or '/opt/sana/dev.db',
         'USER': '',
         'PASSWORD': '',
         'HOST': '',
@@ -99,7 +99,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'sana.mrs.util.LoggingMiddleware',
+    'mrs.util.LoggingMiddleware',
 )
 """Don't touch this unless you know what you are doing."""
 
@@ -129,7 +129,8 @@ forget to use absolute paths, not relative paths.For a typical Sana
 deployment use: "/opt/sana/templates/"."""
 
 INSTALLED_APPS = (
-    'sana.mrs',
+	'sana',
+    'mrs',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -175,13 +176,13 @@ ZNISMS_SENDERID = ''
 """Consult ZniSMS documentation."""
 
 ### Email Configuration
-EMAIL_HOST = ''
+EMAIL_HOST = 'email-smtp.us-east-1.amazonaws.com'
 """Outgoing mail server."""
-EMAIL_HOST_USER = ''
+EMAIL_HOST_USER = 'AKIAJVVAM4M7FIVRMI2A'
 """Password for account used to send."""
-EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_PASSWORD = 'AhRgExaybAz/Qu33fVtDxrT8NyL0OyfB6G2gCY9uph97'
 """Password for account used to send."""
-EMAIL_PORT = ''
+EMAIL_PORT = '587'
 """Check with mail host, i.e. gmail uses 587."""
 EMAIL_USE_TLS = True
 """Check with mail host if encryption is supported"""

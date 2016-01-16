@@ -16,9 +16,9 @@ import telnetlib
 
 from django.conf import settings
 
-from sana.mrs import MultipartPostHandler
-from sana.mrs.util import enable_logging
-from sana.mrs.util import mark
+from mrs import MultipartPostHandler
+from mrs.util import enable_logging
+from mrs.util import mark
 
 
 class OpenMRS(object):

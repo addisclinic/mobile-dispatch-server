@@ -9,10 +9,10 @@ from django.shortcuts import render_to_response
 from django import forms
 from django.contrib.auth import authenticate, login
 
-from sana.mrs.openmrs import sendToOpenMRS
-from sana.mrs.util import enable_logging
-from sana.mrs.models import Notification
-from sana.mrs.util import enable_logging
+from mrs.openmrs import sendToOpenMRS
+from mrs.util import enable_logging
+from mrs.models import Notification
+from mrs.util import enable_logging
 
 def chunk( seq, size, pad=None ):
     """Slice a list into consecutive disjoint 'chunks' of

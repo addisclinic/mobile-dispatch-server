@@ -13,7 +13,7 @@ from django.conf import settings
 from django.http import HttpResponse
 
 from sana import handler
-from sana.mrs.models import RequestLog
+from mrs.models import RequestLog
 
 LOGGING_ENABLE_ATTR = 'LOGGING_ENABLE'
 LOGGING_START_TIME_ATTR = 'LOGGING_START_TIME'
