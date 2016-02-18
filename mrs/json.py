@@ -1009,8 +1009,8 @@ def eventlog_submit(request):
             The client event log request.
     """
 
-    client_id = request.REQUEST.get('client_id', None)
-    events_json = request.REQUEST.get('events', None)
+    client_id = request.POST.get('client_id', None)
+    events_json = request.POST.get('events', None)
 
     if events_json is None or client_id is None:
         return render_json_response(json_fail("Could not parse eventlog submission."))

@@ -2,6 +2,7 @@ import urllib
 import telnetlib
 import logging
 import cjson
+import sys, traceback
 
 from models import BinaryResource
 from django.http import HttpResponse
@@ -115,8 +116,8 @@ def list_notifications(request):
     """
     logging.info("entering notification list proc")
 
-    username = request.REQUEST.get('username',None)
-    password = request.REQUEST.get('password',None)
+    username = request.GET.get('username',None)
+    password = request.GET.get('password',None)
     user = authenticate(username=username, password=password)
     if user is not None:
         try:
