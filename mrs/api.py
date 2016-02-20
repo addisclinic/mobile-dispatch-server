@@ -14,10 +14,10 @@ from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
 
-from sana.mrs.models import SavedProcedure, Client, BinaryResource, ClientEventLog
-from sana.mrs import openmrs
-from sana.mrs.media import FFmpeg
-from sana.mrs.util import flush, mark, enable_logging
+from mrs.models import SavedProcedure, Client, BinaryResource, ClientEventLog
+from mrs import openmrs
+from mrs.media import FFmpeg
+from mrs.util import flush, mark, enable_logging
 
 # api.py -- interface-agnostic API methods
 

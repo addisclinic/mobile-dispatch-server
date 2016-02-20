@@ -42,14 +42,14 @@ from django.core.mail import send_mail
 from django.shortcuts import render_to_response
 from django.core.exceptions import ObjectDoesNotExist, MultipleObjectsReturned
 
-from sana.mrs import openmrs
-from sana.mrs.api import register_saved_procedure
-from sana.mrs.api import register_binary
-from sana.mrs.api import register_binary_chunk
-from sana.mrs.api import register_client_events
-from sana.mrs.util import enable_logging, mark
+from mrs import openmrs
+from mrs.api import register_saved_procedure
+from mrs.api import register_binary
+from mrs.api import register_binary_chunk
+from mrs.api import register_client_events
+from mrs.util import enable_logging, mark
 from django.core import serializers
-from sana.mrs.models import Notification, SavedProcedure, Patient, Procedure, Client
+from mrs.models import Notification, SavedProcedure, Patient, Procedure, Client
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 
