@@ -1,0 +1,22 @@
+<div id="id_messages">
+{% block messages %}
+  {% if messages %}
+  <p>Messages:</p>
+  <ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+{% endblock messages %}
+{% block debug %}
+  {% if debug %}
+  <h3>Debug</h3>
+  <ul>
+    {% for x in debug %}
+      <li>{{ x }}</li>
+    {% endfor %}
+   </ul>
+  {% endif %}
+{% endblock debug %}
+</div>

@@ -1,0 +1,39 @@
+{% load i18n %}
+{% load static %}
+{% if menu %}
+<div class="horizontal-menu">
+    <nav>
+    <ul>
+    {% for site in menu.sites %}
+        <li>
+        <a href="#"><h4>{% trans site.label|title %}</h4></a>
+        {% if site.views %}
+            <ul>
+                {% for portal_view in site.views %}
+                <li><a href="{% url portal.app|add:':'|add:portal_view.context_name %}">{% trans portal_view.label|title %}</a></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        </li>
+    {% endfor %}
+    </ul>
+</nav>
+</div>
+<script>
+$(document).ready(
+  /* This is the function that will get executed after the DOM is fully loaded */
+  function () {
+    /* Next part of code handles hovering effect and submenu appearing */
+    $('.nav li').hover(
+      function () { //appearing on hover
+        $('ul', this).fadeIn();
+      },
+      function () { //disappearing on hover
+        $('ul', this).fadeOut();
+      }
+    );
+  }
+);
+</script>
+{% endif %}
+

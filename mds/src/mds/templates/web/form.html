@@ -1,0 +1,17 @@
+{% extends 'web/base.html' %}
+{% load static %}
+{% load i18n %}
+{% block header %}Update {{ model|title }}{% endblock %}
+{% block extrastyle %}
+<link rel="stylesheet" href="{{ STATIC_PREFIX }}web/css/formstyle.css">
+{% endblock %}
+{% block content %}
+<!-- "{% url 'web:'|add:model|add:'-edit' pk=object.id %}" -->
+<form 
+    enctype="multipart/form-data" 
+    action="."
+    method="POST">
+{{ csrftoken }}
+{% include "web/form_snippet.html" %}
+</form>
+{%endblock content %}

@@ -1,0 +1,170 @@
+This file contains intructions for installing a new instance.
+
+Requires Ubuntu 14.04 LTS
+
+Upgrade instructions.
+Everything as root(sudo)
+1.  Install packages
+    a. Use tasksel for meta packages. This will install a number of required
+       packages and their dependiencies.
+       tasksel
+       (Select Lamp Stack and Tomcat and press Enter)
+    b. Individual packages
+        apt-get install                 \
+            libapache2-mod-wsgi         \
+            libapache2-mod-jk           \
+            python-cjson                \
+            python-django               \
+            python-django-piston        \
+            python-django-extra-views   \
+            python-mysqldb              \
+            python-libxml2              \
+            python-lxml                 \
+            python-django-extensions    \
+            python-imaging              \
+            sqlite3                     \
+            javascript-common           \
+            libjs-jquery-ui             \
+            libjs-jquery-timepicker
+        If getting the mds code from source
+        apt-get install git
+
+
+2.  Create /opt/sana if it does not exist. This will be the document root
+    where the mds urls and files get served from.
+    a. mkdir -p /opt/sana/sana.mds/cache
+    b. mkdir -p /opt/sana/sana.mds/cache/static
+    c. mkdir -p /opt/sana/sana.mds/cache/media
+    
+
+    
+3.  Create the mds database and set up access.Use your own password instead
+    of **** below.
+    a.  Open a MySQL prompt.
+        mysql -u root -p
+        CREATE DATABASE mds;
+        CREATE USER 'mds'@'localhost' IDENTIFIED BY '****';
+        GRANT ALL ON mds.* TO 'mds'@'localhost';
+        exit;
+    Note: You should change the password value, '****', in the line beginning with "CREATE USER 'mds'...", 
+    to one of your choice.    
+4. Get the mds source code
+    a. mkdir ~/git
+    b. cd ~/git
+    c. git clone https://github.com/SanaMobile/sana.mds.git
+    
+5. Link or copy the mds source into the sana directories
+    a. ln -s /home/<user>/git/sana.mds/src/mds /opt/sana/sana.mds/mds
+    or
+    b. cp -r /home/<user>/git/sana.mds/src/mds /opt/sana/sana.mds
+    c. cp /home/<user>/git/sana.mds/src/manage.py /opt/sana/sana.mds  
+    Note: Linking is preferable to keep any files cached at runtime out of the source directories.
+    
+6. Install and set up the mds code
+    a. cp /opt/sana/sana.mds/mds/settings.py.tmpl /opt/sana/sana.mds/mds/settings.py
+    b. cp /opt/sana/sana.mds/mds/local_settings.py.tmpl /opt/sana/sana.mds/mds/local_settings.py
+    c. Adjust any values in settings.py to match the local system. Should just be the database config.
+    d. intialize mds
+        cd /opt/sana/sana.mds
+        ./manage.py syncdb
+        ./manage.py collectstatic
+    d. Copy or link the contents of /opt/sana/sana.mds/mds/ to your apache document root. The default for 
+        Ubuntu is /var/www/html, e.g.
+        
+            ln -sf /opt/sana/sana.mds/mds /var/www/html/mds
+        
+   Update the apache configuration
+
+7. Update permissions for the .
+    a. chown -R www-data:www-data /opt/sana/sana.mds
+
+8.  Apache configs:
+    a. Set mds environment variables
+       echo 'export MDS_DIR=/opt/sana/sana.mds' >> /etc/apache2/envvars
+    b. Copy the mds.conf file from the source into the apache conf-available directory
+       and enable
+        cp /home/<user>/git/sana.mds/include/mds/apache2/conf-available/* \
+            /etc/apache2/conf-available
+    c. Add option to follow symlinks for the server root directive in your apache config, example:
+        
+        <Directory /var/www/html>
+            Options FollowSymLinks
+            Require all granted
+        </Directory>
+        
+    d. Enable mds conf
+        a2enconf mds
+    e. Verify wsgi module is running
+        a2enmod wsgi
+    f. Restart apache
+        service apache2 restart
+        
+9.  Set up encryption. (https://help.ubuntu.com/14.04/serverguide/certificates-and-security.html)
+    This is not absolutely required for development servers. The following is a quick start
+    for generating your own certificate.
+    
+    a. Create your own certificate and key
+       openssl genrsa -des3 -out server.key 1024
+       openssl rsa -in server.key -out server.key.insecure
+       openssl req -new -key server.key -out server.csr
+       openssl x509 -req -days 365 -in server.csr -signkey server.key.insecure -out server.crt
+       (You will be prompted for some information. Type in country, state, city,
+        org, common name. You can skip challenge password and company name)
+    b. Copy the cert and key
+       cp server.crt /etc/ssl/certs
+       cp server.key /etc/ssl/private
+       
+10. Restart Apache and check connection:
+    a.  service apache2 restart
+    b.  You should now be able to access:
+        http://<your-server>/mds/
+        https://<your-server>/mds/
+
+Ignore the following steps if running MDS in standalone mode.
+
+Including OpenMRS as the EHR backend.
+1.  Configure Tomcat
+    a.  Just follow old manual install instructions ignoring any references to
+        the older OpenMRS version.
+        http://sana.mit.edu/wiki/index.php?title=Setup_Servers#Setup_and_Configure_Tomcat
+    b. Enable apache modules and and openmrs conf
+    
+        a2enmod jk
+        a2enmod proxy
+        a2enmod proxy_http
+        a2enmod proxy_ajp
+        a2enconf openmrs
+        
+       Note: Step (b) will provide access to OpenMRS through http(s)://<your-server>/openmrs.
+    c. Verify that the following line is in your /etc/tomcat7/server.xml file, uncomment if necessary.
+    
+           <Connector port="8009" URIEncoding="UTF-8" enableLookups="false" protocol="AJP/1.3" />
+       
+       A sample server.xml is available in the includes directory.
+    d. Create OpenMRS installation directory
+    
+        mkdir /usr/share/tomcat7/.OpenMRS
+        chown tomcat7:tomcat7 /usr/share/tomcat7/.OpenMRS
+       
+    e. Restart tomcat.
+           service tomcat7 restart
+
+2..  OpenMRS Install-1.9.7 release
+    a.  Download
+        http://openmrs.org/download/
+    b. Follow installation instructions:
+        https://wiki.openmrs.org/display/docs/Installing+OpenMRS
+
+3. Add Modules through browser(OpenMRS Administration --> Manage Modules)
+    a. Webservices.REST
+       Go to the module settings page in the Admin and set the
+       "Webservices REST Uri Prefix" to http://<ip-address>[:port]/openmrs/
+    b. HTMLFormEntry
+    c. LogManager
+    d. Sana module - get the latest beta version
+        http://demo.sana.csail.mit.edu/downloads/openmrs/
+
+4. Configure OpenMRS for Sana
+    Again, follow current release instructions and ignore any references to
+    older versions of OpenMRS
+    http://sana.mit.edu/wiki/index.php?title=OpenMRS_Configuration

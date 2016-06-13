@@ -1,0 +1,242 @@
+{% load url from future %}
+{% load i18n %}
+{% load static %}
+<!DOCTYPE HTML>
+<html> 
+  <head>
+    {% block meta %}
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+    <meta charset="utf-8" />
+    {% endblock meta %}
+
+    <title>{% block title %}{%endblock %}</title>
+    {% load static %}
+    {% get_static_prefix as STATIC_PREFIX %}
+    
+  {% block style %}
+    <!-- <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400' rel='stylesheet' /> -->
+    <link rel="stylesheet" href="{{ STATIC_PREFIX }}css/jquery-ui.css">
+    <link rel="stylesheet" href="{{ STATIC_PREFIX }}web/css/index.css">
+    <link rel="stylesheet" href="{{ STATIC_PREFIX }}web/css/lib/fontello.css" />
+    <link rel="stylesheet" href="{{ STATIC_PREFIX }}web/css/lib/normalize.css" />
+    <!--
+    link rel="stylesheet" href="{{ STATIC_PREFIX }}web/css/sidebar.css" /
+    -->
+    <link rel="stylesheet" href="{{ STATIC_PREFIX }}web/css/menu.css" />
+    <link rel="stylesheet" href="{{ STATIC_PREFIX }}web/css/footer.css" />
+    <link rel="stylesheet" href="{{ STATIC_PREFIX }}web/css/loader.css" />
+    <link rel="stylesheet" href="{{ STATIC_PREFIX }}web/css/jquery-ui-timepicker-addon.css" />
+  {% endblock style %}
+  {% block extrastyle %}{% endblock %}
+  {% block script %}
+  <script src="{{ STATIC_PREFIX }}js/jquery-1.10.1.js"></script>
+  <script src="{{ STATIC_PREFIX }}js/jquery-ui.js"></script>
+  <script src="{{ STATIC_PREFIX }}js/jquery.serializejson.js"></script>
+  <script src="{{ STATIC_PREFIX }}js/core.js"></script>
+  <script src="{{ STATIC_PREFIX }}web/js/jquery.cookie.js"></script>
+  <script src="{{ STATIC_PREFIX }}web/js/console.js"></script>
+  <script src="{{ STATIC_PREFIX }}web/js/functions.js" />
+  <script src="{{ STATIC_PREFIX }}web/js/jquery-ui-timepicker-addon.js"></script>
+  <script src="{{ STATIC_PREFIX }}web/js/jquery-ui-sliderAccess.js"></script>
+  <script>
+    var procedure = "303a113c-6345-413f-88cb-aa6c4be3a07d";
+    var subject = null;
+    var device = "2fc0a9f7-384b-4d97-8c1c-aa08f0e12105";
+    var concept = "266d8a8f-9178-4616-bcea-896194379059";
+    var encounter = null;
+    var auth = {
+        "csrftoken" : $.cookie("csrftoken"),
+        "sessionid" : $.cookie("sessionid"),
+    };
+
+    var data = {
+            procedure : procedure,
+            subject : subject,
+            device : device,
+            concept : concept,
+            encounter : encounter
+    };
+
+    function getData(){
+        return data;
+    }
+
+    function clearData(){
+        data = {
+            procedure : null,
+            subject : null,
+            device : null,
+            concept : null,
+            encounter : null,
+        };
+    }
+
+    function setSubject(value){
+        data['subject'] = value;
+        subject = value;
+    }
+
+    function setDevice(value){
+        data['device'] = value;
+    }
+
+    function setConcept(value){
+        concept = value;
+    }
+
+    function setEncounter(value){
+        encounter = value;
+    }
+
+    function linkSuccess(data){
+        window.load(data);
+    }
+
+    function linkFail(data){
+       alert("Failed getting page." + data);
+    }
+
+    function getHeaders(){
+        headers = {
+            "csrftoken" : $.cookie("csrftoken"),
+            "sessionid" : $.cookie("sessionid"),
+        };
+        return headers;
+    }
+
+    function webIntake(){
+        var url = '/mds/web/encounter/';
+        var data = {
+            procedure : procedure,
+            subject : subject,
+            device : device,
+            concept : concept
+        };
+        headers = {
+            "csrftoken" : $.cookie("csrftoken"),
+            "sessionid" : $.cookie("sessionid"),
+        };
+        getPageWithHeaders(url,data,auth);
+    }
+
+    function webRegister(){
+        var url = '/mds/web/register/';
+        subject = null;
+        var data = {
+            subject : subject,
+            device : device,
+        };
+        headers = {
+            "csrftoken" : $.cookie("csrftoken"),
+            "sessionid" : $.cookie("sessionid"),
+        };
+        getPageWithHeaders(url,data,auth);
+    }
+
+    function webTask(){
+        var url = '/mds/web/etask/';
+        data = {
+            subject : subject,
+            device : device,
+        };
+        headers = {
+            "csrftoken" : $.cookie("csrftoken"),
+            "sessionid" : $.cookie("sessionid"),
+        };
+        getPageWithHeaders(url,data,auth);
+    }
+
+    function setMode(value){
+        $.cookie("mode",value, {'path':'/'});
+    }
+    function setSessionDevice(value){
+        $.cookie("mode",value);
+    }
+    function setSessionSubject(value){
+        $.cookie("mode",value);
+    }
+    function setSessionEncounter(value){
+        $.cookie("mode",value);
+    }
+    function setRegisterNew(value){
+        $.cookie("register", value);
+    }
+    function isNew(){
+        return $.cookie("register");
+    }
+
+{% block extrascript %}{% endblock extrascript %}
+  </script>
+
+  {% endblock script %}
+
+  <script type="text/javascript">
+    root="";
+    {% block flavorscript %}
+      // Displays Date picker pop up
+      $(function(){
+        $('input[type="date"]').datepicker({ 
+            dateFormat: 'yy-mm-dd', 
+            changeYear: true , 
+            yearRange : "c-100:c+05"
+            }).prop('type','text');
+        $('input[type="date"]').prop('type','text');
+      });
+
+    // Workaround for safari issues
+    $(function() {
+      $( "select[multiple='multiple']").selectable();
+      $( "select[multiple='multiple']").on("selectablestart", function (event, ui) {
+        event.originalEvent.ctrlKey = true;
+      });
+    });
+
+    {% endblock flavorscript %}
+  </script>
+  </head>
+<body>
+<div class="wrapper">
+  <section class="main-content">
+  <div class="main-content-header">
+    <table >
+        <tr>
+            <td class="text-left"><a href="{% url 'web:portal' %}"><h3>{% trans "Home" %}</h3></a></td>
+            <td class="center"><h2><strong>{% block header %}{% endblock %}</strong></h2></td>
+            <td class="text-right"><a href="{% url 'web:logout' %}"><h3 class="text-right">{% trans "Logout" %}</h3></a></td>
+        </tr>
+    </table>
+    {% if portal %}
+        {% include 'web/includes/menu.html' with menu=portal %}
+    {% endif %}
+  </div>
+  <div class="main-content-body">
+    <div class="main-content-body-inner">
+      {% block content %}{% endblock %}
+    </div>
+    {% include 'web/messages.html' %}
+  </div>
+
+  </section>
+</div>
+<div id="loader" class="loader"></div>
+<footer>
+<div>
+{% block footer %}
+    <ul>
+        <li><img src="{{ STATIC_PREFIX }}web/img/sana_small.png"/></li>
+        <li>Copyright 2015 Sana Mobile</li>
+    </ul>
+{% endblock footer %}
+</div>
+</footer>
+ <script>
+      $(document).ajaxStart(function() {
+        // show loader on start
+        $("#loader").css("display","block");
+      }).ajaxSuccess(function() {
+      // hide loader on success
+      $("#loader").css("display","none");
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% load url from future %}
+
+{% block body %}
+<h3>MDS connection successful</h3>
+<ul>
+    <li>Django Version: {{ message.django }}</li>
+    <li>Platform: {{ message.platform }}</li>
+    <li>MDS version: {{ message.version }}</li>
+<ul>
+{% endblock %}

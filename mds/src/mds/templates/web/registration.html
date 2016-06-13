@@ -1,0 +1,72 @@
+{% extends "web/base.html" %}
+{% block script %}
+{{ block.super }}
+<script>
+function logTokens(){
+    var sessionid = readCookie("sessionid");
+    var csrftoken = readCookie("csrftoken");
+    if(window.console){
+        console.log("sessionid : " + sessionid);
+        console.log("csrftoken : " + csrftoken);
+    }
+}
+function successCB(data){
+    if(window.console) console.log("SUCCESS REPORTED POSTING SUBJECT");
+    if(data){
+        var msg = data['message'];
+        alert("Success Creating Patient:\n " + msg['system_id']);
+        var uuid = msg['uuid'];
+        if(window.console) console.log("....object uuid: " + uuid);
+        $("#id_subject").val(uuid);
+        $.cookie("subject",uuid, { path: '/' });
+    } else {
+        if(window.console) console.log("....null data?");
+    }
+} 
+function failCB(){
+    alert("Failure creating patient! ");
+    //setSubject(null);
+} 
+
+function submitSubjectWeb(){
+    logTokens();
+    var system_id = $('#id_system_id').val();
+    var given_name = $('#id_given_name').val();
+    var family_name = $('#id_family_name').val();
+    var use_age  = $('#id_use_age').val();
+    var age  = $('#id__age').val();
+    var dob  = $('#id_dob').val();
+    var gender = $('#id_gender').val();
+    var image = $('#id_image').val();
+    var location = $('#id_location').val();
+    {% url 'mds.core:surgical-subject-list' as posturl %}
+    var posturl = '{{ posturl }}';
+    var url = '/mds/core/surgicalsubject/';
+    var data = {
+        system_id: system_id,
+        given_name: given_name,
+        family_name: family_name,
+        dob: dob,
+        gender: gender,
+        location: location,
+        image: image
+    }
+    var headers = {
+        "sessionid": $.cookie("sessionid"),
+        "csrftoken": $.cookie("csrftoken")
+    };
+    postAjaxWithHeaders(url,data,headers,successCB,failCB);
+    //submitSubjectSSI(system_id, given_name, family_name, dob, gender, location, image,successCB,failCB);
+}
+</script>
+{% endblock %}
+
+{% block content %}
+<div id="tabs-1" class="ui-content">
+    {{ form.as_p }}
+  <input type="hidden" name="subject" id="id_subject">
+  <p align="center" style="font-size:larger">
+    <input type="button" id="id_submit_patient" class="show-page-loading-msg" value="Create Patient" onClick="submitSubjectWeb()">
+  </p>
+</div>
+{% endblock content %}

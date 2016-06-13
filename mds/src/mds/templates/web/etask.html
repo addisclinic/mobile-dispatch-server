@@ -1,0 +1,273 @@
+{% extends "web/base.html" %}
+{% block meta %}
+  {{ block.super }}
+  <meta name="flavor" value="{{ flavor }}"/>
+{% endblock meta %}
+
+{% block script %}
+{% if flavor and flavor == "mobile" %}
+
+{% else %}
+  {{ block.super }}
+{% endif %}
+<script type="text/javascript">
+var pending = 0;
+var results = [];
+var index = 0;
+var output = "Success Creating task(s) due on:";
+var is_new = false;
+
+function postSuccess(data){
+    pending--;
+    if(data){
+        var msg = data['message'];
+        var encounter = msg['uuid'];
+        stdout("postSuccess()","SUCCESS creating task due on" + msg['due_on']);
+        if(pending == 0){
+            
+            results[index] = msg['due_on'];
+            for(var i = 0; i < results.length; i++){
+                    output = output +"\n " + results[i];
+            }
+            alert(output);
+        } else {
+            results[index] = msg['due_on'];
+            index++;
+        }
+    } else {
+        stdout("postSuccess()","No data");
+    }
+}
+
+function postFail(errors){
+    var message = "Failure creating task(s)!"
+    if(errors){
+        $.each(errors, function(index,value){
+            message= message +"\n" + value;
+        });
+    } else {
+        message = message + "\nNo message returned";
+    }
+    alert(message);
+}
+
+function submitEncounterTaskWeb(){
+    results = [];
+    var subject = $('#id_subject').val();
+    var status = 1;
+    var assigned_to = $('#id_assigned_to').val();
+    var procedure = $('#id_procedure').val();
+
+    // get the auth headers
+    var headers = {
+        "csrftoken" : $.cookie("csrftoken"),
+        "sessionid" : $.cookie("sessionid"),
+    }
+    if (is_new){
+        submitInitialSet(assigned_to,subject,procedure,headers);
+    } else {
+        submitSingle(assigned_to,subject,procedure, headers);
+    }
+}
+
+
+function submitInitialSet(assigned_to,subject,procedure,headers){
+    var status = 1;
+    pending = 3;
+    output = "Success creating " + pending + " task(s) due on:";
+
+    // Selected type via concept - defaults to obviously invlaid value
+    var concept = "";
+
+    // Selected due date - defaults to obviously invlaid values
+    var due_on = "";
+    var due_date = "9999-01-01";
+    var due_time1 = $('#id_due_initial_time');
+    var due_time2 = $('#id_due_second_time');
+    var due_time3 = $('#id_due_thirty_time');
+    
+    // validate time values
+    if(!validateJQueryObjTime(due_time1)){
+        return;
+    }
+
+    if(!validateJQueryObjTime(due_time2)){
+        return;
+    }
+
+    if(!validateJQueryObjTime(due_time3)){
+        return;
+    }
+
+    due_date = $('#id_due_initial').val();
+    due_on = formatDueDatetime(due_date,due_time1.val());
+    // Concept is preset
+    concept = "53dd9e7e-b025-489e-a507-921f540bd66b";
+    postEncounterTask(assigned_to,status, due_on, subject, procedure, concept, headers, postSuccess, postFail);
+
+    // second regular follow up
+    due_date = $('#id_due_second').val();
+    due_on = formatDueDatetime(due_date,due_time2.val());
+    concept = "b6209098-d24d-4f39-ae82-577e2a4e6386";
+    postEncounterTask(assigned_to,status, due_on, subject, procedure, concept, headers, postSuccess, postFail);
+
+    // 30 day follow up
+    due_date = $('#id_due_thirty').val();
+    due_on = formatDueDatetime(due_date,due_time3.val());
+    concept = "d908fe76-c210-4b9c-95f3-08eea37da1cb";
+    postEncounterTask(assigned_to,status, due_on, subject, procedure, concept, headers, postSuccess, postFail);
+}
+
+function submitSingle(assigned_to,subject,procedure, headers){
+    var status = 1;
+    pending = 1;
+    output = "Success creating " + pending + " task(s) due on:";
+
+    var due_date = $('#id_due_single').val();
+    var due_time = $('#id_due_single_time');
+    if(!validateJQueryObjTime(due_time)){
+        return;
+    }
+    var due_on = String(formatDueDatetime(due_date,due_time.val()));
+
+    // Selected type via concept - defaults to obviously invlaid value
+    var concept = $('#id_concept').val();
+
+    postEncounterTask(assigned_to,status, due_on, subject, procedure, concept, headers, postSuccess, postFail);
+}
+
+    
+function formatDueDatetime(due_date,due_time){
+    var due_datetime = due_date+" "+due_time;
+    return due_datetime;
+}
+
+function toggleSupplemental(){
+    is_new = $('#id_show_task_set').prop("checked");
+    $('#id_concept').prop("disabled",is_new);
+    $('#id_due_single').prop("disabled",is_new);
+    $('#id_single_task').slideToggle();
+    $('#id_supplemental_tasks').slideToggle();
+}
+</script>
+{% endblock script %}
+    {% block flavorscript %}
+      $(function(){
+      //$( "input[type='date']" ).datepicker({ dateFormat: 'mm/dd/yy', changeYear: true });
+        $('input[type="date"]').datepicker({ dateFormat: 'yy-mm-dd', changeYear: true , yearRange : "c-100:c+05"}).prop('type','text');
+        $('input[type="date"]').prop('type','text');
+    });
+    // Workaround for safari issues
+    $(function() {
+      $( "select[multiple='multiple']").selectable();
+      $( "select[multiple='multiple']").on("selectablestart", function (event, ui) {
+        event.originalEvent.ctrlKey = true;
+      });
+    });
+
+    {% endblock flavorscript %}
+
+{% block content %}
+<form name="intake" id="id_form" action="javascript:submitEncounterTaskWeb()" method="post">
+<div id="id_controller">
+  <input type="checkbox" id="id_show_task_set" name="new_patient_tasks" value="false" onClick="toggleSupplemental()">Show Initial Task Set</input>
+</div>
+<div id="id_initial_tasks">
+
+  {% if flavor and flavor == "mobile" %}
+    {{ form }}
+  {% else %}
+    {{ form.as_p }}
+  {% endif %}
+</div>
+<div id="id_single_task">
+<table>
+  <tr class="taskset">
+    <td>
+      <label for="id_due_single">Due on:</label>
+    </td>
+    <td>
+      <input type="date" id="id_due_single" name="due_single"/>
+    </td>
+    <td>
+      <label for="id_due_single_time">Time(hh:mm:ss):</label>
+    </td>
+    <td>
+      <input type="text" id="id_due_single_time" name="due_single_time" value="23:59:59"/>
+    </td>
+  </tr>
+</table>
+</div>
+<div id="id_supplemental_tasks">
+<table>
+  <tr class="taskset">
+    <td>
+      <label for="id_due_initial">Initial visit date:    </label>
+    </td>
+    <td>
+      <input type="date" id="id_due_initial" name="due_initial"/>
+    </td>
+    <td>
+      <label for="id_due_initial_time">Time(hh:mm:ss):</label>
+    </td>
+    <td>
+      <input type="text" id="id_due_initial_time" name="due_initial_time" value="23:59:59"/>
+    </td>
+  </tr>
+  <tr class="taskset">
+    <td>
+      <label for="id_due_second">Follow up visit date:  </label>
+    </td>
+    <td>
+      <input type="date" id="id_due_second" name="due_second"/>
+    </td>
+    <td>
+      <label for="id_due_second_time">Time(hh:mm:ss):</label>
+    </td>
+    <td>
+      <input type="text" id="id_due_second_time" name="due_second_time" value="23:59:59"/>
+    </td>
+  </tr>
+  <tr class="taskset">
+    <td>
+      <label for="id_due_thirty">30 day follow up date:</label>
+    </td>
+    <td>
+      <input type="date" id="id_due_thirty" name="due_thirty"/>
+    </td>
+    <td>
+      <label for="id_due_thirty_time">Time(hh:mm:ss):</label>
+    </td>
+    <td>
+      <input type="text" id="id_due_thirty_time" name="due_thirty_time" value="23:59:59"/>
+    </td>
+  </tr>
+</table>
+</div>
+<div id="id_submit>
+  <p align="center" style="font-size:larger">
+    <input type="button" id="id_submit_intake" class="show-page-loading-msg" value="Submit Task" onClick="submitEncounterTaskWeb()">
+  </p>
+</div>
+<script>
+  $('#id_supplemental_tasks').hide(0);
+  var subject = null;
+  $(function(){
+    subject = $.cookie("subject");
+    if(subject){
+        $('#id_subject').val(subject);
+    }
+    var new_patient = $.cookie("new_patient");
+    if(new_patient){
+        $('#id_new_patient').val(new_patient);
+    }
+
+    var visit = $.cookie("regular_follow_up");
+    if(visit){
+        $('#id_due_on').val(visit + " 23:59:59");
+    }
+  });
+</script>
+</form>
+
+{% endblock content %}

@@ -1,0 +1,47 @@
+<form action="/core/logs/report/" method="post">
+<table style="width:100%" class="content-list">
+    <thead>
+        <tr class="logheader">
+            <th>Date</th>
+            <th>Client</th>
+            <th>URI</th>
+            <th>Duration</th>
+            <th>Message</th>
+            <th>Select</th>
+        </tr>
+    </thead>
+    <tfoot>
+        <tr class="footerrow">
+            <td class="pagenav" colspan="4">Go To Page:
+                <select onchange="getLogPage(value)"> 
+                {% for p in range %}
+                    <option>{{ p }}</option>
+                {% endfor %}
+                </select>
+            </td>
+            <td align="right"><input type="submit" value="Download Selected"/></td>
+            <td align="right">
+                <input id="refreshB" type="button" onclick="refreshBlock()" value="Click to Auto Refresh!" />
+            </td>
+        </tr>
+    </tfoot>
+    <tbody>
+        {% for log in objects %}
+        <tr id="log-{{log.uuid}}" class="{% cycle 'evenrow' 'oddrow' %}">
+            <td width="160px" onClick="toggleDetails('{{log.uuid}}'); return false;">{{ log.timestamp|date:"m/d/Y H:i:s" }}</td>
+            <td width="96px" onClick="toggleDetails('{{log.uuid}}'); return false;">{{ log.client }}</td>
+            <td onClick="toggleDetails('{{log.uuid}}'); return false;">{{ log.path }}</td>
+            <td onClick="toggleDetails('{{log.uuid}}'); return false;">{{ log.duration|floatformat:4 }}s</td>
+            {% if log.level >= 16 %}
+            <td>ERROR</td>
+            {% else %}
+            <td>OK</td>
+            {% endif %}
+            <td><input type="checkbox" name="{{ log.uuid }}"></input></td>
+        </tr>
+    <tr id="log-{{log.uuid}}-detail" style="display: none;" class="detail">
+    </tr>
+    {% endfor %}
+</tbody>
+</table>
+</form>

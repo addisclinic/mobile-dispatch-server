@@ -1,0 +1,155 @@
+{% extends "web/base.html" %}
+{% block meta %}
+  {{ block.super }}
+  <meta name="flavor" value="{{ flavor }}"/>
+{% endblock meta %}
+
+{% block script %}
+{% if flavor and flavor == "mobile" %}
+
+{% else %}
+  {{ block.super }}
+{% endif %}
+<script>
+    function postSuccess(data){
+        if(data){
+            var msg = data['message'];
+            var encounter = msg['uuid'];
+            stdout("postSuccess()","SUCCESS creating task due on" + msg['due_on']); 
+            alert("Success Creating task due on:\n " + msg['due_on']);
+    } else {
+        stdout("postSuccess()","No data");
+    }
+}
+
+    function postFail(errors){
+        alert("Failure creating task.");
+    }
+
+
+    function submitEncounterTaskWeb(){
+        var subject = $('#id_subject').val()
+        var status = 1;
+        var assigned_to = $('#id_assigned_to').val();
+        
+        // Selected procedure
+        var procedure = $('#id_procedure').val();
+
+        // Selected due date
+        var due_on = $('#id_due_on').val();
+
+        // Selected type via concept
+        var concept = $('#id_concept').val();
+        var headers = {
+            "csrftoken" : $.cookie("csrftoken"),
+            "sessionid" : $.cookie("sessionid"),
+        }
+        postEncounterTask(assigned_to,status, due_on, subject, procedure, concept, headers, postSuccess, postFail);
+        
+        var new_patient = bool($.cookie("new_patient"));
+        if(new_patient){
+            // second regular follow up
+            due_on = $('#id_due_second').val();
+            concept = "b6209098-d24d-4f39-ae82-577e2a4e6386";
+            postEncounterTask(assigned_to,status, due_on, subject, procedure, concept, headers, postSuccess, postFail);
+            //postTask(assigned_to,status, due_on, subject, procedure,concept, postSuccess, postFail);
+
+            // 30 day follow up
+            due_on = $('#id_due_thirty').val();
+            concept = "d908fe76-c210-4b9c-95f3-08eea37da1cb";
+            postEncounterTask(assigned_to,status, due_on, subject, procedure, concept, headers, postSuccess, postFail);
+        }
+}
+
+function submitInitialTasks(){
+
+        var subject = $('#id_subject').val()
+        var status = 1;
+        var assigned_to = $('#id_assigned_to').val();
+        
+        // Selected procedure
+        var procedure = $('#id_procedure').val();
+
+        // Selected due date
+        var due_on = $('#id_due_on').val();
+
+        // Selected type via concept
+        var concept = $('#id_concept').val();
+        var data = {
+            
+        };
+
+        var headers = {
+            "csrftoken" : $.cookie("csrftoken"),
+            "sessionid" : $.cookie("sessionid"),
+        }
+
+        // initial follow up
+        var concept = "53dd9e7e-b025-489e-a507-921f540bd66b";
+        postEncounterTask(assigned_to,status, due_on, subject, procedure, concept, headers, postSuccess, postFail);
+        //postTask(assigned_to,status, due_on, subject, procedure, concept, postSuccess, postFail);
+
+        // second regular follow up
+        due_on = $('#id_due_second').val();
+        concept = "b6209098-d24d-4f39-ae82-577e2a4e6386";
+        postEncounterTask(assigned_to,status, due_on, subject, procedure, concept, headers, postSuccess, postFail);
+        //postTask(assigned_to,status, due_on, subject, procedure,concept, postSuccess, postFail);
+
+        // 30 day follow up
+        due_on = $('#id_due_thirty').val();
+        concept = "d908fe76-c210-4b9c-95f3-08eea37da1cb";
+        postEncounterTask(assigned_to,status, due_on, subject, procedure, concept, headers, postSuccess, postFail);
+        //postTask(assigned_to,status, due_on, subject, procedure,concept, postSuccess, postFail);
+  }
+
+</script>
+{% endblock script %}
+    {% block flavorscript %}
+      $(function(){
+      //$( "input[type='date']" ).datepicker({ dateFormat: 'mm/dd/yy', changeYear: true });
+        $('input[type="date"]').datepicker({ dateFormat: 'yy-mm-dd 23:59', changeYear: true , yearRange : "c-100:c+05"}).prop('type','text');
+        $('input[type="date"]').prop('type','text');
+    });
+    // Workaround for safari issues
+    $(function() {
+      $( "select[multiple='multiple']").selectable();
+      $( "select[multiple='multiple']").on("selectablestart", function (event, ui) {
+        event.originalEvent.ctrlKey = true;
+      });
+    });
+
+    {% endblock flavorscript %}
+
+{% block content %}
+
+<form name="intake" id="id_form" action="javascript:submitInitialTasks()" method="post">
+  {% if flavor and flavor == "mobile" %}
+    {{ form }}
+  {% else %}
+    {{ form.as_p }}
+  {% endif %}
+    <input type="hidden" id="id_new_patient" name="new_patient" value="false"/>
+<p align="center" style="font-size:larger">
+    <input type="button" id="id_submit_intake" class="show-page-loading-msg" value="Submit Task" onClick="submitInitialTasks()">
+  </p>
+
+</form>
+<script>
+  var subject = null;
+  $(function(){
+    var subject = $.cookie("subject");
+    if(subject){
+        $('#id_subject').val(subject);
+    }
+    var new_patient = $.cookie("new_patient");
+    if(new_patient){
+        $('#id_new_patient').val(new_patient);
+    }
+    var visit = $.cookie("regular_follow_up");
+    if(visit){
+        $('#id_due_on').val(visit + " 23:59");
+    }
+  });
+</script>
+
+{% endblock content %}

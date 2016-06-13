@@ -1,0 +1,131 @@
+{% extends "mobile/base.html" %}
+{% block body %}
+{{ super.block }}
+<div data-role="header">
+  <h1 class="docs">Patient Registration:</h1>
+</div>
+<script>
+    function clearForm(){
+        $(':input','#form')
+          .not(':button, :submit, :reset, :hidden')
+          .val('');
+    }
+
+    function clearSubject(){
+        $('#system_id').text("").show();
+        $('#given_name').text("").show();
+        $('#family_name').text("").show();
+        $('#dob').text("").show();
+        $('#gender').text("").show();
+    }
+
+    function submitSubject(){
+        var system_id = $('#system_id').val();
+        var given_name = $('#given_name').val();
+        var family_name = $('#family_name').val();
+        var dob  = $('#dob').val();
+        var gender = $('#gender').val();
+        var image = $('#image').val();
+        //var file = $('#image').files[0];
+        var location = $('#location').val();
+        $.post('/mds/core/subject/',{ 
+                    system_id: system_id,
+                    given_name: given_name,
+                    family_name: family_name,
+                    dob: dob,
+                    gender: gender,
+                    location: location,
+                    //image: image
+                }, 
+                clearSubject()
+               ).fail(function(){
+                    alert("Fail " + $('this'));
+                });
+    }
+
+    function submitEncounter(){
+    
+    }
+
+    function submitEncounterTask(){
+    
+    }
+
+    function submitRegistration(){
+
+                function(data){
+                    //var status = obj.status;
+                    clearSubject();
+                    
+                    //alert('Succesfully registered:\n' + system_id);
+                    $('span:first').text("Successfully registered: " + system_id).show();
+                    //
+                    //console.log(data);
+                    //document.getElementById('image');
+                }).fail
+        
+    }
+    
+    
+</script>
+<div data-theme="a" data-form="ui-body-a" class="ui-body ui-body-a ui-corner-all">
+    <h3>Required</h3>
+    <div>
+    <form id="form" method="post" action="javascript:submitSubject()">
+      <label for="system_id">System id:</label>
+      <input type="number" name="system_id" id="system_id" min="0" step="1" value="000020" />
+      <label for="given">Given Name:</label>
+      <input type="text" name="given_name" id="given_name" value="Test" />
+      <label for="family">Family Name:</label>
+      <input type="text" name="family_name" id="family_name" value="Mobile" />
+      <label for="dob">Date of Birth:</label>
+      <input type="date" name="dob" id="dob" value="01/01/2014" />
+      <label for="gender">Gender:</label>
+      <input list="genders" name="gender" id="gender" value="M" />
+      <datalist id="genders">
+        <option>F</option>
+        <option>M</option>
+      </datalist>
+      <label for="image">Image:</label>
+      <input type="file" name="image" id="image"/>
+      <p align="center">
+      <input type="hidden" name="location" id="location" value="d4b7efb4-7ade-4700-936c-7bf34b0feef1" />
+      <input type="submit" class="show-page-loading-msg">
+      </p>
+      </form>
+      <span id="output"></span>
+      <!--
+      <script>
+        $("#form").submit(function(event)
+        {
+           var myData = $( form ).serialize(); 
+           $.ajax({
+                  type: "POST", 
+                  contentType:attr( "enctype", "multipart/form-data" ),
+                  url: " URL Goes Here ",  
+                  data: myData,  
+                  success: function( data )  
+                  {
+                       alert( data );
+                  }
+           });
+         return false;  
+         });
+         //submitRegistration();
+         //event.preventDefault();
+         //return false;
+         //});
+      </script>
+   </div>
+</div>
+  <h3>Links</h3>
+  <div class="ui-body ui-body-a ui-corner-all">
+    <p align="center">
+      <ul>
+        <li><a href="registration.html">Registration</a></li>
+        <li><a href="encounter.html">Encounters</a></li>
+        <li><a href="index.html">Home</a></li>
+      </ul>
+    </p>
+  </div>
+{% endblock %}

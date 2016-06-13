@@ -1,0 +1,58 @@
+{% extends "core/mobile/base.html" %}
+{% block body %}
+{{ block.super }}
+<div data-role="header"> 
+  <h1 class="docs">Patient Summary: </h1>
+</div>
+<!--
+<div id="accordion-resizer" class="ui-widget-content">
+  <div id="accordion">
+-->
+  <div data-role="header"> 
+    <h3>Summary</h3>
+  </div>
+   <div class="ui-body ui-body-a ui-corner-all">
+    <table data-role="table" id="obs-table" data-mode="reflow">
+      <thead> 
+        <tr>
+          <th>Id:</th>
+          <th>Name:</th>
+          <th>DOB:</th>
+          <th>Gender:</th>
+          <th>Image:</th>
+        </tr>
+      </thead>
+      <tbody>   
+        {% for obj in objs %}
+        <tr>
+          <td>{{ obj.system_id }}</td>
+          <td>{{ obj.family_name }}, {{obj.given_name }}</td>
+          <td>{{ obj.dob }}</td>
+          <td>{{ obj.gender }}</td>
+          {% if obj.image %}
+            <td><a href="{{ obj.image.url }}"><img src="{{ obj.thumb_url }}" width="96">{{ obj.image.url }}</img></a></td>
+          {% else %}
+            <td>None</td>
+          {% endif %}
+        </tr>
+        {% endfor %}
+      </tbody>  
+  </table>
+  </div>
+  <div data-role="header">
+      <h3>Links</h3>
+  </div>
+  <div class="ui-body ui-body-a ui-corner-all">
+    <p align="center">
+      <ul>
+        <li><a href="registration.html">Registration</a></li>
+        <li><a href="encounter.html">Encounters</a></li>
+        <li><a href="index.html">Home</a></li>
+      </ul>
+    </p>
+  </div>
+<!--
+  </div>
+</div>
+ -->
+{% endblock %}

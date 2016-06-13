@@ -1,0 +1,17 @@
+[
+  {
+    "pk": 1, 
+    "model": "core.procedure", 
+    "fields": {
+      "src": "", 
+      "description": "Simple procedure which includes all of the elements from the V1 procedure schema.", 
+      "author": "Sana", 
+      "title": "API Test", 
+      "modified": "2014-09-09T13:20:07", 
+      "created": "2014-04-09T14:38:20", 
+      "version": "1.0", 
+      "voided": false, 
+      "uuid": "2bae218f-9c07-40ac-88fb-c7c60aa1d89d"
+    }
+  }
+]

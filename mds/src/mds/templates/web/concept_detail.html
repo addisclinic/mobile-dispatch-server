@@ -1,0 +1,24 @@
+{% extends "web/base.html" %}
+{% comment %}
+# Generic model detail template for use with classes extending 
+# DetailView and using ModelMixin
+{% endcomment %}
+{% block title %}{{ model|title|add:' Detail' }}{% endblock %}
+{% block content %}
+<hr>
+<table class="content-list" >
+    <tbody>
+    {# replace %row with evenrow or oddrow #} 
+    <tr class="%row">
+        <td class="text-left"><strong>field</strong></td>
+        <td class="text-right">{{ v }}</td>
+    </tr>
+    <tr class="%row">
+        <td class="text-left"><strong>field</strong></td>
+        <td class="text-right"><a href="/mds/media/{{ object.field }}">{{ MEDIA_URL }}{{ object.src }}</a></td>
+    </tr>
+    </tbody>
+</table> 
+<hr>
+<a href="{% url 'web:'|add:model|add:'-list' %}">Back</a>
+{% endblock content %}

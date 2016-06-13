@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{% block title %}Sana MDS{% endblock %}</title>
+    {% block style %}
+    <style>
+    html, body {
+        height: 100%;
+        padding: 0;
+        margin: 0;
+    }
+    div.container {
+        min-height: 100%;
+        width: 100%;
+        margin: 0px;
+        height: 100%;
+    }
+    div.header{
+        padding: 0.5em;
+        color: white;
+        background-color: gray;
+        clear: left;
+        text-align: justify;
+        font-size: small;
+    }
+    div.footer{
+        padding: 0.5em;
+        color: white;
+        background-color: gray;
+        clear: left;
+        text-align: justify;
+        font-size: small;
+        width: 100%;
+        bottom: 0;
+        position: fixed;
+    }
+    table.footer{
+        width:100%;
+    }
+    </style>
+    {% endblock %}
+    {% block scripts %}
+        {% load static %}
+        <script src="{{ STATIC_URL }}admin/js/jquery.js"></script>
+    {% endblock %}
+  </head>
+  <body>
+    <div class="container">
+    {% block header %}{% endblock %}
+    {% block body %}{% endblock %}
+    {% block footer %}
+    <footer>
+        <div class="footer">
+        {% if message %}
+            <table class="footer">
+                <tr>
+                {% for k,v in message.items %}
+                    <td>{{ k }}: {{ v }}</td>
+                {% endfor %}
+                </tr>
+            </table>
+        {% else %}
+        {% endif %}
+        </div>
+    {% endblock %}
+    </div>
+    </footer>
+  </body>
+</html>

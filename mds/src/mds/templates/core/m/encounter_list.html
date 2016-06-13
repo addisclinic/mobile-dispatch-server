@@ -1,0 +1,23 @@
+{% extends "core/m/index.html" %}
+
+{% block body %}
+    {% for obj in objs %}
+    <ul>
+	<div>
+	<form id="{{ obj.uuid }}" action="{{ obj.get_absolute_url }}" method="get">
+	    <h3>{{ obj.subject }}</h3>
+	    <br/>Procedure: {{ obj.procedure.title }}
+	    <br/>Completed on: {{ obj.modified }}
+	    <br/>By: {{  obj.observer }}
+	    <br/>{{ request.content_type}}
+	</form>
+	</div>
+    <script>
+	$("div").select(function() {
+	    alert( "Handler called." );
+	    
+	 });
+    </script>
+    </ul>
+    {% endfor %}
+{% endblock body  %}

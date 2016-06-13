@@ -1,0 +1,6 @@
+Contributors:
+Sana Development Team(MIT)
+
+Joe Gene Quesada (Integrated Open Source Solutions) (Kannel SMS Integration)
+Don Pachecho (Integrated Open Source Solutions) (Kannel SMS Integration) (Record Retrieval)
+Paulo Vinoya (Integrated Open Source Solutions) (Kannel SMS Integration)

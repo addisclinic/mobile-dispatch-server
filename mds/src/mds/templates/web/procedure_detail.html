@@ -1,0 +1,63 @@
+{% extends "web/base.html" %}
+{% comment %}
+# Generic model detail template
+#  
+# Requires:
+#	form
+#
+{% endcomment %}
+{% block title %}{{ model|title|add:' Detail' }}{% endblock %}
+{% block content %}
+<h3>Model: {{ object }}:: {{ slug_field }}</h3>
+<hr>
+<table class="content-list" >
+    <tbody>
+    <tr class="evenrow">
+        <td class="text-left"><strong>UUID</strong></td>
+        <td class="text-right">{{ object.uuid }}</td>
+    </tr>
+    <tr class="oddrow">
+        <td class="text-left"><strong>Title</strong></td>
+        <td class="text-right">{{ object.title }}</td>
+    </tr>
+    <tr class="evenrow">
+        <td class="text-left"><strong>Version</strong></td>
+        <td class="text-right">{{ object.version }}</td>
+    </tr>
+    <tr class="oddrow">
+        <td class="text-left"><strong>Author</strong></td>
+        <td class="text-right">{{ object.author }}</td>
+    </tr>
+    <tr class="evenrow">
+        <td class="text-left"><strong>Src</strong></td>
+        
+        <td class="text-right"><a href="/mds/media/{{ object.src }}">{{ MEDIA_URL }}{{ object.src }}</a></td>
+    </tr>
+    <tr class="oddrow">
+        <td class="text-left"><strong>Voided</strong></td>
+        <td class="text-right">{{ object.voided }}</td>
+    </tr>
+    </tbody>
+</table> 
+<hr>
+<table class="content-list" >
+    <tbody>
+    {% for field in fields %}
+        {% if field.name != 'id' %}
+        <tr class="{% cycle 'evenrow' 'oddrow' %}">
+            <td class="text-left"><strong>{{ field.name }}</strong></td>
+            <td class="text-right">
+            {% if field.is_link %}
+                <a href="{{ field.link }}">{{ field.value}}</a></td>
+            {% else %}
+                {{ field.value }}
+            {% endif %}
+            </td>
+            <td
+        </tr>
+        {% endif %}
+    {% endfor %}
+    </tbody>
+</table> 
+<a href="{% url 'web:'|add:model|add:'-list' %}">Back</a>
+{% endblock content %}

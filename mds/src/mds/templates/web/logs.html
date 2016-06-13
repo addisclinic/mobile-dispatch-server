@@ -1,0 +1,204 @@
+{% extends "web/base.html" %}
+
+{% block extrastyle %}
+<style>
+
+.pagelist
+{
+    cssFloat: right;
+    width: 100%;
+    color: #fefefe;
+}
+td.selectp
+{
+    text-decoration:underline;
+}
+
+.err
+{
+    background-color: #ffaaaa;
+}
+.debug
+{
+    background-color: #dffddd;
+}
+#refresh{
+      cssFloat: right;
+}
+#logs
+{
+    background-color: #ffffff;
+    
+}
+.evenrow
+{
+    background-color: #ffffff;
+    
+}
+.oddrow
+{
+    background-color: #efefef;
+    
+}
+.logheader
+{
+    font-weight: bold;
+    width: inherit;
+    padding: 0;
+    border-spacing: 0px;
+    border-collapse: collapse;
+}
+.pagenav
+{
+    color: #1100ff;
+}
+.detail
+{
+    background-color: #ffffff;
+}
+
+</style>
+{% endblock %}
+
+{% block script %}
+    {{ block.super }}
+
+<script type="text/javascript">
+
+    var auto = 0;
+    var pindex = 1;
+    var interval;
+    var start = 1;
+    var limit = 20;
+    var level = 0;
+    function init(){
+        document.getElementById('status').innerHTML = new Date();
+    }
+    
+    function getLogPage(p){
+    	   pindex = p;
+    	   $('#logs').load( "/mds/web/logs/list/" + "?start=" + pindex +"&limit=" + {{ limit }}+"&level=" + level );
+    }
+
+    function getLogs(){
+    	   document.getElementById('status').innerHTML = new Date();
+    	   getLogPage(pindex);
+    }
+
+    function filterLevel(value){
+        level = Number(value);
+        $('#logs').load( "/mds/web/logs/list/" + "?start=" + pindex +"&limit=" + {{ limit }}+"&level=" + level); 
+    }    
+    
+    function refreshBlock()
+    {   
+        if(auto == 1){
+    	    document.getElementById('refreshB').value = "Click to Start!";
+    	    interval = clearInterval(interval);
+    	    auto = 0;
+    	} else {
+    	    interval = setInterval("getLogs();",3000);
+    	    document.getElementById('refreshB').value = "Click to Stop!";
+	    auto = 1;
+	}
+    }    
+
+    function toggleDetails(id) {
+	if(auto == 1){
+    	    document.getElementById('refreshB').value = "Click to Start!";
+    	    clearInterval();
+    	    auto = 0;
+    	}
+	var detail = $("#log-"+id+"-detail");
+	if(!detail.hasClass("data")) {
+	    getDetails(id, function() { detail.addClass("data"); detail.toggle("slow"); });
+	} else {
+	    detail.toggle("slow");
+	}
+    }
+
+    function showDetail(id) {
+    	jQuery("#log-"+id+"-detail").show();
+    }
+
+    function json_update(msg, callback) {
+        
+        id = msg['uuid'];
+        data = msg['message'];
+    	updateDetails(id,data);
+    	callback();
+    }
+
+    function getDetails(id, callback) {
+           //$.getJSON("/mds/core/event/" + id,{}, 
+           $.getJSON("/mds/core/logs/detail/" + id,{}, 
+                function(data) {json_update(data, callback); 
+           });  
+    }
+
+    function buildRowHtml(record) { 
+    	   return ("+" + "&nbsp;<b>"+ record['level_name'] + "&nbsp;" 
+    			    + record['filename'] + ":" + record['line_number'] 
+    			    + "</b> &nbsp;" + record['message']);
+    }
+
+    function updateDetails(id, data) {
+    	var message = '<td colspan="6"><dl>';
+    	var msg = data;//data['message']
+	for (var i in msg) {
+			if("ERROR" == msg[i]['level_name']){
+    		    message += '<dd class="err">' + buildRowHtml(msg[i]) + "</dd>";
+	        } else if("DEBUG" == msg[i]['level_name']){
+    		    message += '<dd class="debug">' + buildRowHtml(msg[i]) + "</dd>";
+	        } else
+	    	   message += '<dd>' + buildRowHtml(msg[i]) + '</dd>';
+	    	    //message = message + "" + data[i].message + "<br/>";
+	        }
+	    message = message + "</dl></td>";
+        var detail = $("#log-"+id+"-detail");
+	    detail.html(message);
+	    detail.attr('data', msg);
+    }
+
+    function hideDetail(id) {
+	    jQuery("#log-"+id+"-detail").hide();
+    }
+    
+    window.onload = init;
+    
+</script>
+
+{% endblock script %} 
+
+{% block header %}
+
+{% endblock header %}
+{% block content %}
+    {{ block.super }}
+<div>
+    <table style="margin:0 auto;">
+    <tr>
+        <td align="left"><b>Last Updated:</b></td>
+        <td  id="status" width="360px" align="center"></td>
+        <td>Level:
+            <select id="level" onChange="filterLevel(value)">
+                <option value="0">ALL</option>
+                <option value="2">INFO</option>
+                <option value="4">DEBUG</option>
+                <option value="8">WARN</option>
+                <option value="16">ERROR</option>
+            </select>
+        </td>
+    </tr>
+    </table>
+</div>
+    <div id="logs" class="log-list">
+      {% include "web/log_list.html" with objects=objects %}
+    </div>
+    {% with start as curpage %}
+    <div>
+    <input id="refreshB" type="button" onclick="refreshBlock()" value="Click to Auto Refresh!" />
+    {% endwith %}
+    </div>
+{% endblock content %}
+

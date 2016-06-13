@@ -1,0 +1,49 @@
+{% extends 'web/base.html' %}
+{% load static %}
+{% load i18n %}
+{% block header %}Create {{ model|title }}{% endblock %}
+{% block extrastyle %}
+<link rel="stylesheet" href="{{ STATIC_PREFIX }}web/css/formstyle.css">
+{% endblock %}
+{% block extrascript %}
+/*
+    $(document).ready(function(){
+        $("#id_password").attr("type","password");
+        $("#id_password").val("");
+        $("#id_username").val("");
+    });
+*/
+    $(document).ready(function(){
+        $( document ).on( 'focus', ':input', function(){
+            $( this ).attr( 'autocomplete', 'off' );
+        });
+    });
+{% endblock %}
+{% block content %}
+<form enctype="multipart/form-data" action="{% url 'web:'|add:model|add:'-create' %}" method="post">
+    {{ csrftoken }}
+    {% include "web/form_snippet.html" %}
+    <div id="inlines">
+    {% if inlines %}
+        {% for inline in inlines %}
+        <form name="{{ inline.model }}" id="{{ 'id_'|add:inline.model }}">
+            {% include "web/form_snippet.html" with form=inline.form %}
+        </form>
+        {% endfor %}
+    {% endif %}
+    </div>
+    <div class="navbar">
+        <ul>
+            <li>
+            {% if object %}
+                <input type="submit" value="{% trans 'Update' %}"/>
+            {% else %}
+                <input type="submit" value="{% trans 'Add' %}"/>
+            {% endif %}
+            </li>
+        </ul>
+    <div>
+</form>
+<div id="wait">
+</div>
+{%endblock content %}

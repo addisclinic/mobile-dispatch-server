@@ -1,0 +1,77 @@
+{% extends "core/flavor.html" %}
+{% block flavorscript %}
+  {{ block.super }}
+    function clearSubjectForm(){
+        $(':input','#id_subject')
+          .not(':button, :submit, :reset, :hidden')
+          .val('');
+    }
+    function clearSubject(){
+        $('#id_system_id').text("").show();
+        $('#id_given_name').text("").show();
+        $('#id_family_name').text("").show();
+        $('#id_dob').text("").show();
+        $('#id_gender').text("").show();
+        //$('#id_image').text("").show();
+    }
+
+    function submitIntake(){
+        //if(window.console){ console.log("Submitting subject"); }
+        var subject = submitSubject();
+        //if(window.console){ console.log("Submitting Encounter"); }
+        //submitEncounter(subject);
+        //if(window.console){ console.log("Submitting Tasks"); }
+        //submitEncounterTasks();
+    }
+  $(function() {
+      $( "#tabs" ).tabs();
+  });
+{% endblock flavorscript %}
+{% block body %}
+{{ block.super }}
+<div>
+<form name="intake" id="id_intake" action="javascript:submitIntake()" method="post">
+<div id="tabs" data-role="tabs" >  
+  <div>
+    <ul>
+      <li><a  href="#tabs-1" data-theme="a" data-ajax="false">Patient</a></li>
+      <li><a  href="#tabs-2" data-theme="a" data-ajax="false">Intake</a></li>
+      <li><a  href="#tabs-3" data-theme="a" data-ajax="false">Schedule</a></li>
+    </ul>
+  </div>
+  <input id="id_patient_uuid" type="hidden"/>
+  <input type="hidden" name="observer_uuid" id="id_observer_uuid" value="{{ observer.uuid }}">
+  <div id="tabs-1" class="ui-content">
+    {{ subject_form.as_p }}
+    <input type="hidden" name="patient" id="patient_uuid">
+    <p align="center" style="font-size:larger">
+      <input type="button" id="id_submit_patient" class="show-page-loading-msg" value="Create Patient" onClick="submitSubject()">
+    </p>
+  </div>
+  <br/>&nbsp;
+  <div id="tabs-2" class="ui-content"> 
+    <input id="id_encounter_uuid" type="hidden"/>
+    <input type="hidden" name="encounter_procedure_uuid" id="id_encounter_procedure_uuid" value="303a113c-6345-413f-88cb-aa6c4be3a07d"/>
+    <input type="hidden" name="encounter_concept_uuid" id="id_encounter_concept_uuid" value="266d8a8f-9178-4616-bcea-896194379059"/>
+    <input type="hidden" name="encounter_device_uuid" id="id_encounter_device_uuid" value="0725f5f5-e5b3-4d26-91d3-2d2bce40363c"/>
+    {{encounter_form.as_p }}
+  <p align="center" style="font-size:larger">
+    <input type="button" id="id_submit_encounter" class="show-page-loading-msg" value="Submit Intake" onClick="submitEncounter()">
+  </p>
+
+  </div>
+
+  <br/>&nbsp;
+  <div id="tabs-3" class="ui-content"> 
+    {{ sa_form.as_p }}
+  <p align="center" style="font-size:larger">
+    <input type="button" id="id_submit_intake" class="show-page-loading-msg" value="Submit Tasks" onClick="submitEncounterTasks()">
+  </p>
+  </div>
+
+</div>
+<!-- end tabs -->
+
+</form>
+</div>
+{% endblock %}

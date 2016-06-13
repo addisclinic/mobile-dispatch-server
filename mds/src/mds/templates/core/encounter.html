@@ -1,0 +1,74 @@
+{% extends "core/mobile/base.html" %}
+{% block body %}
+{{ block.super }}
+<div data-role="header"> 
+  <h1 class="docs">Encounter Review: {{ count }}</h1>
+</div>
+<!--
+<div id="accordion-resizer" class="ui-widget-content">
+  <div id="accordion">
+-->
+
+    <ul data-role="listview" data-inset="true" class="ui-listview ui-listview-inset ui-corner-all ui-shadow">
+    {% for obj in objs %}
+      <li class="ui-li-static ui-body-inherit ">
+      <div class="ui-body ui-body-a ui-corner-all">
+        <table data-role="table" id="encounter-table" data-mode="reflow">
+        <thead> 
+          <tr>
+            <th>Procedure:</th>
+            <th>Patient:</th>
+            <th>User:</th>
+            <th>Device:</th>
+          </tr>
+        </thead>
+        <tbody>   
+          <tr>
+            <td>{{ obj.procedure }}</td>
+            <td>{{ obj.subject }}</td>
+            <td>{{ obj.observer }}</td>
+            <td>{{ obj.device }}</td>
+          </tr>
+        </tbody>
+        </table>
+      </div>
+    
+     <div data-role="header">
+       <h3>Observations</h3>
+     </div>
+     
+      <ul id="obs-list-{{ encounter.uuid }}" data-role="listview" data-inset="true" class="ui-listview ui-listview-inset ui-corner-all ui-shadow">
+      {% for obs in encounter.observations %}
+        <li class="ui-li-static ui-body-inherit ">
+             <p>Question: <span class="ui-body-inherit">{{ obs.node }}</span></p>
+             <p>Concept: <span class="ui-body-inherit">{{ obs.concept }}</span></p>
+             {% if obs.url %}
+                <p>Value: <span class="ui-body-inherit"><a href="{{ obs.url }}"><img src="{{ obs.url }}" width="96"></img></a></span>
+             {% else %}
+                <p>Value: <span class="ui-body-inherit">{{ obs.value }}</span>
+             {% endif %}
+             </p>
+         </li>
+         {% endfor %}
+      </ul>
+      </div>
+    </li>
+    {% endfor %}
+  </ul>
+  <div data-role="header">
+      <h3>Links</h3>
+  </div>
+  <div class="ui-body ui-body-a ui-corner-all">
+    <p align="center">
+      <ul>
+        <li><a href="registration.html">Registration</a></li>
+        <li><a href="encounter.html">Encounters</a></li>
+        <li><a href="index.html">Home</a></li>
+      </ul>
+    </p>
+  </div>
+<!--
+  </div>
+</div>
+ -->
+{% endblock %}

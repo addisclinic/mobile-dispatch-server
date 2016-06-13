@@ -1,0 +1,28 @@
+{% load i18n %}
+
+<div class="pagination" style="-webkit-column-count: 3;-moz-column-count: 3;column-count: 3;">
+  <div>>
+    {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}">
+        prev
+      </a>
+    {% else %}
+      <span>prev</span>
+    {% endif %}
+  </div>>
+  <div>
+  <select>
+  {% for page_number in paginator.page_range %}
+    {% if page_number = page_obj.number %}
+      <option value="{{ page_number }}">{{ page_number }}</option>
+  {% endfor %}
+  </select>
+  </div>
+  <div>
+    {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}">next</a>
+    {% else %}
+      <span>next</span>
+    {% endif %}
+  </div>
+</div>>
