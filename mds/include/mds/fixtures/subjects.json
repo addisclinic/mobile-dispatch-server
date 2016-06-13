@@ -1,0 +1,18 @@
+[
+    {
+        "pk": 1,
+        "model": "core.subject",
+        "fields": {
+            "family_name": "Subject",
+            "uuid": "7ac6f734-be5a-4b2c-b211-ff523a87bc02",
+            "created": "2014-03-16 21:04:26",
+            "dob": "2014-03-01 00:00:00",
+            "gender": "M",
+            "image": "",
+            "modified": "2014-03-16 21:04:26",
+            "system_id": "123456",
+            "given_name": "Test",
+            "location": "d4b7efb4-7ade-4700-936c-7bf34b0feef1"
+        }
+    }
+]

@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}
+{{ block.super}} Log Viewer
+{% endblock %}
+
+{% block styles %}
+{{block.super}}
+{% endblock %}
+
+{% block scripts %}
+{{ block.super }}
+
+<script>
+
+function toggleDetails(id) {
+  var detail = $("#log-"+id+"-detail");
+  if(!detail.hasClass("data")) {
+    getDetails(id, function() { detail.addClass("data"); detail.toggle("slow"); });
+  } else {
+    detail.toggle("slow");
+  }
+}
+
+function showDetail(id) {
+  jQuery("#log-"+id+"-detail").show();
+}
+
+function json_update(msg, callback) {
+  id = msg['id'];
+  data = msg['data'];
+  updateDetails(id,data);
+  callback();
+}
+
+function getDetails(id, callback) {
+  $.getJSON("{% url log-json-detail-noarg %}" + id, 
+            {}, 
+            function(data) {json_update(data, callback); });  
+}
+
+function buildRowHtml(record) {
+  return ("+" + record['delta'] + "&nbsp;<b>" + record['filename'] + ":" + record['line_number'] + "</b> &nbsp;" + record['message'] + "<br/>");
+}
+
+function updateDetails(id, data) {
+  var message = '<td colspan="3">';
+  for (var i in data) {
+    message += buildRowHtml(data[i]);
+    //message = message + "" + data[i].message + "<br/>";
+  }
+  message = message + "</td>";
+  var detail = $("#log-"+id+"-detail");
+  detail.html(message);
+  detail.attr('data', data);
+  
+}
+
+function hideDetail(id) {
+  jQuery("#log-"+id+"-detail").hide();
+}
+</script>
+{% endblock %} 
+
+{% block body %}
+
+<table>
+  <thead>
+    <tr>
+      <th>Date</th>
+      <th>URI</th>
+      <th>Duration</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for log in object_list %}
+    <tr id="log-{{log.id}}" onClick="toggleDetails({{log.id}}); return false;">
+      <td>{{ log.timestamp|date:"m/d/Y H:i:s" }}</td>
+      <td>{{ log.uri }}</td>
+      <td>{{ log.duration|floatformat:4 }}s</td>
+    </tr>
+    <tr id="log-{{log.id}}-detail" style="display:none;" class="detail">
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% with page as curpage %}
+<div>Pages: {% for page in page_range %}
+{% ifequal curpage page %}
+{{page}}
+{% else %}
+<a href="{% url log-view %}?page={{page}}">{{ page }}</a>
+{% endifequal %}
+
+{% endfor %}
+</div>
+{% endwith %}
+
+{% endblock %}

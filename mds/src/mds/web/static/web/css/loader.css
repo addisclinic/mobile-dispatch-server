@@ -1,0 +1,9 @@
+.loader{
+    text-align:center;
+    vertical-align:center;
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    z-index: 1000;
+    background: url('/mds/static/web/img/ajax-loader.gif');
+}

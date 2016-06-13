@@ -1,0 +1,49 @@
+{% extends "core/mobile/base.html" %}
+{% block body %}
+{{ block.super }}
+<div data-role="header"> 
+  <h1 class="docs">Patient List:</h1>
+</div>
+<!--
+<div id="accordion-resizer" class="ui-widget-content">
+  <div id="accordion">
+-->
+<ul data-role="listview" data-inset="true" class="ui-listview ui-listview-inset ui-corner-all ui-shadow">
+  {% for obj in objs %} 
+  <li class="ui-li-static ui-body-inherit ">
+    <div data-role="header"> 
+      <h4><a href="/mds/core/mobile/subject/{{ obj.uuid }}/">{{ obj.uuid }}</a></h4>
+    </div>
+    <div class="ui-body ui-body-a ui-corner-all">
+      <table data-role="table" id="subj-table-{{ obj.uuid }}" data-mode="reflow">
+        <thead> 
+        <tr>
+          <th>System ID:</th>
+          <th>Name:</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td><a href="/mds/core/mobile/subject/{{ obj.uuid }}">{{ obj.system_id }}</td>
+          <td>{{ obj.family_name }}, {{ obj.given_name }}</td>
+        </tr>
+        </tbody>  
+      </table>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+
+<div data-role="footer">
+  <h3>Links</h3>
+</div>
+<div class="ui-body ui-body-a ui-corner-all">
+  <p align="center">
+    <ul>
+      <li><a href="registration.html">Registration</a></li>
+      <li><a href="encounter.html">Encounters</a></li>
+      <li><a href="index.html">Home</a></li>
+    </ul>
+  </p>
+</div>
+{% endblock %}

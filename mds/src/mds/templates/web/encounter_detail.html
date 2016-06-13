@@ -1,0 +1,59 @@
+{% extends "web/base.html" %}
+{% load static %}
+{% load i18n %}
+{% block extrastyle %}
+<link rel="stylesheet" href="{{ STATIC_PREFIX }}web/css/liststyle.css">
+{% endblock extrastyle %}
+{% block title %}{{ model|title|add:' Detail' }}{% endblock %}
+{% block content %}
+<div>
+<table class="content-list" >
+    <tbody>
+    <tr class="evenrow">
+        <td class="text-left"><strong>UUID</strong></td>
+        <td class="text-right">{{ object.uuid }}</td>
+    </tr>
+    <tr class="oddrow">
+        <td class="text-left"><strong>Subject</strong></td>
+        <td class="text-right">{{ object.subject }}</td>
+    </tr>
+    <tr class="evenrow">
+        <td class="text-left"><strong>Procedure</strong></td>
+        <td class="text-right">{{ object.procedure }}</td>
+    </tr>
+    <tr class="oddrow">
+        <td class="text-left"><strong>Date</strong></td>
+        <td class="text-right">{{ object.modified }}</td>
+    </tr>
+    </tbody>
+</table> 
+</div>
+<hr>
+<div>
+<table class="content-list" >
+    <thead>
+        <tr class="headerrow">
+            <th colspan="2"><h2>Observations</h2></th>
+        </tr>
+    <tbody>
+    {% for observation in object.observation_set.all %}
+    {% with obsurl='web:observation-detail' %}
+    <tr class="{% cycle 'evenrow' 'oddrow'  %}"
+        onclick="document.location='{% url obsurl pk=observation.id %}'">
+        <td class="text-left"><strong>{{ observation.concept.name|title }}</strong></td>
+        <td class="text-right">
+            {% if observation.is_complex %}
+                <a href="{{ MEDIA_PREFIX }}{{ object.value_complex }}">
+                    <img src="{{ STATIC_PREFIX }}web/img/binary.png"/>
+                </a>
+            {% else %}
+                {{ observation.value }}
+            {% endif %}
+        </td>
+    </tr>
+    {% endwith %}
+    {% endfor %}
+    </tbody>
+</table> 
+</div>
+{% endblock content %}

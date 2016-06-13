@@ -1,0 +1,12 @@
+
+
+<form action="{% url sana-api-email-notification-submit %}" method="POST">
+
+Email Addresses: <input type="text" name="emailAddresses"/><br/>
+Case Identifier: <input type="text" name="caseIdentifier"/><br/>
+Patient Identifier: <input type="text" name="patientIdentifier"/><br/>
+Subject: <input type="text" name="subject"/><br/>
+Message: <input type="text" name="notificationText"/><br/>
+
+<input type="submit"/>
+</form>

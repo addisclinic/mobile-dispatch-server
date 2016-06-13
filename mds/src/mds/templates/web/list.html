@@ -1,0 +1,111 @@
+{% extends "web/base.html" %}
+{% load url from future %}
+{% load static %}
+{% load i18n %}
+{% block title %}{{ model|title }} List{% endblock title%}
+{% block extrastyle %}
+<link rel="stylesheet" href="{{ STATIC_PREFIX }}web/css/liststyle.css">
+{% endblock %}
+{% block extrascript %}
+    ordering = "asc";
+
+    function filter(url, sort_by, order, page){
+        data = {
+            sort_by : sort_by,
+            order : order,
+        };
+        if (page){
+            data['page'] = page;
+        };
+        headers = {
+            "csrftoken" : $.cookie("csrftoken"),
+            "sessionid" : $.cookie("sessionid"),
+        };
+        getPageWithHeaders(url,data,auth);
+    }
+    //window['filter'] = filter;
+{% endblock %}
+{% block header %}<h3><strong>{{ model|title }} List</strong></h3>{% endblock %}
+{% block content %}
+<table class="content-list" id="contentlist">
+    <thead>
+    <tr class="headerrow">
+        {% for label in  fields %}
+        <th class="left" id="{{ label }}-sort">
+            <table>
+            <tr>
+                <td><strong>{{ label|title }}</strong>
+                <td>
+                    <ul>
+                        <li><button id="{{ label }}-sort-asc" title="{% trans 'Filter Ascending' %}">&#9650;</button></li>
+                        <li><button id="{{ label }}-sort-desc" title="{% trans 'Filter Descending' %}">&#9660;</button></li>
+                    </ul>
+                </td>
+            </tr>
+            </table>
+            </span>
+            <script>
+                $('#{{ label }}-sort-all').on('click', function(){
+                        url = "{% url 'web:'|add:model|add:'-list' %}";
+                        qs = "page={{ page_obj.number }}&sort_by={{ label }}&order={{ order }}";
+                        window.location.assign(url+"?"+qs);
+                        }
+                    );
+                $('#{{ label }}-sort-asc').on('click', function(){
+                        url = "{% url 'web:'|add:model|add:'-list' %}";
+                        qs = "page={{ page_obj.number }}&sort_by={{ label }}&order=asc";
+                        window.location.assign(url+"?"+qs);
+                        }
+                    );
+                $('#{{ label }}-sort-desc').on('click', function(){
+                        url = "{% url 'web:'|add:model|add:'-list' %}";
+                        qs = "page={{ page_obj.number }}&sort_by={{ label }}&order=desc";
+                        window.location.assign(url+"?"+qs);
+                        }
+                    );
+            </script>
+        </th>
+        {% endfor %}
+        <th></th>
+    </tr>
+    </thead>
+    <tfoot>
+        <tr class="footerrow">
+            {% with cols=fields|length|add:"-1" %}
+            <td class="footer-left"><a href="{% url 'web:portal' %}"><strong>Back</strong></a></td>
+            <td class="footer-center" colspan="{{ cols }}"><a href="{% url 'web:'|add:model|add:'-create' %}"><strong>New</strong></a></td>
+            <td class="footer-right"  style="text-align:right;">
+                <strong>Go to Page</strong>
+                <select onchange="location = this.options[this.selectedIndex].value;" >
+                {% for page in paginator.page_range %}
+                    <option value="{% url 'web:'|add:model|add:'-list' %}?page={{ page}}&order={{ order }}&sort_by={{ sort_by }}" {% if page == page_obj.number %}selected="selected"{% endif %}>{{ page }}</option>
+                {% endfor %}
+                </select>
+            </td>
+            {% endwith %}
+        </tr>
+    </tfoot>
+    <tbody>
+    {% for obj in objects %}
+        <tr class="{% cycle 'evenrow' 'oddrow' %}" onclick="document.location='{% url 'web:'|add:model|add:'-detail'  pk=obj.id %}';">
+            {% for label,field in obj.fields.items %}
+                {% if field.name != "id" and field.name != "uuid" %}
+                <td>
+                    {% if field.type == "date" %}
+                        {{ field.value|date:"d-F-Y" }}
+                    {% elif field.type == "file" %}
+                        <a href="{{ field.url }}">{{ field.value }}</a>
+                    {% elif field.type == "object" %}
+                        <a href="{{ field.url }}">{{ field.value }}</a>
+                    {% else %}
+                        {{ field.value }}
+                    {% endif %}
+                </td>
+                {% endif %}
+            {% endfor %}
+            <td class="text-right"><a href="{% url 'web:'|add:model|add:'-edit' pk=obj.id %}">{% trans "Edit" %}</a></td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}

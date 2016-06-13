@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <title>{% block title %}{%endblock %}</title>
+    {% load static %}
+    {% get_static_prefix as STATIC_PREFIX %}
+    <link rel="stylesheet" href="{{ STATIC_PREFIX }}css/jquery.mobile-1.4.0.min.css" />
+    <link rel="stylesheet" href="{{ STATIC_PREFIX }}css/jquery-ui.css">
+    <link rel="stylesheet" href="{{ STATIC_PREFIX }}css/danastyles.css"/>
+    <style>
+        #accordion-resizer {
+            padding: 10px;
+            width: 350px;
+            height: 220px;
+        }
+    </style>
+  {% block script %}
+    <script src="{{ STATIC_PREFIX }}js/jquery-1.10.1.js"></script>
+    <script src="{{ STATIC_PREFIX }}js/jquery.mobile-1.4.0.min.js"></script>
+    <script src="{{ STATIC_PREFIX }}js/jquery-ui.js"></script>
+    <script src="{{ STATIC_PREFIX }}js/core.js"></script>
+  {% endblock %}
+  </head>
+  <body>
+    {% block body %}
+    {% endblock %}
+    {% block footer %}
+    <div data-role="footer" data-position="fixed" class="jqm-footer">
+      <p align="center">
+      <ul>
+        <li><a href="/mds/core/intake/?flavor=mobile">Registration</a></li>
+        <li><a href="/mds/core/mobile/encounter/">Encounter List</a></li>
+        <li><a href="/mds/admin">Admin</a></li>
+      </ul>
+      </p>
+    </div>
+    {% endblock %}
+  </body>
+</html>
+

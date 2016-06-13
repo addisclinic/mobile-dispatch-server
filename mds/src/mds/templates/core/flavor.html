@@ -1,0 +1,30 @@
+{% extends "core/base.html" %}
+
+{% block flavorscript %}
+{{ block.super }}
+  $(function() {
+      $( "#tabs" ).tabs();
+  });
+  $(function(){
+      //$( "input[type='date']" ).datepicker({ dateFormat: 'mm/dd/yy', changeYear: true });
+        $('input[type="date"]').datepicker({ dateFormat: 'mm/dd/yy', changeYear: true , yearRange : "c-100:c+05"}).prop('type','text');
+        $('input[type="date"]').prop('type','text');
+  });
+  // Workaround for safari issues
+  $(function() {
+     $( "select[multiple='multiple']").selectable();
+     $( "select[multiple='multiple']").on("selectablestart", function (event, ui) {
+        event.originalEvent.ctrlKey = true;
+    });
+  });
+
+{% endblock flavorscript %}
+
+{% block flavorfooter %}
+  <!-- footer content for desktop, mobile, etc. -->
+  <ul>
+    <li><a href="/mds/core/intake/">Registration</a></li>
+    <li><a href="/mds/core/mobile/encounter/">Encounter List</a></li>
+    <li><a href="/mds/admin">Admin</a></li>
+  </ul>
+{% endblock flavorfooter %}

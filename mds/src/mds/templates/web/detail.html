@@ -1,0 +1,54 @@
+{% extends "web/base.html" %}
+{% load static %}
+{% load i18n %}
+{% comment %}{% endcomment %}
+{% block title %}{{ model|title|add:' Detail' }}{% endblock %}
+{% block extrastyle %}
+<link rel="stylesheet" href="{{ STATIC_PREFIX }}web/css/liststyle.css">
+{% endblock %}
+{% block extrascript %}
+    $(document).ready(function(){
+        $("#id_password").attr("type","password");
+        $( document ).on( 'focus', ':input', function(){
+            $( this ).attr( 'autocomplete', 'off' );
+        });
+    });
+{% endblock %}
+
+{% block content %}
+{% for object in objects %}
+<table class="content-list" >
+    <thead>
+        <tr class="headerrow">
+            <td colspan="2"><h2>{{ object.repr }}</h2></td>
+        </tr>
+    </thead>
+    <tfoot>
+        <tr class="footerrow">
+        <td class="alignleft"><a href="{% url 'web:'|add:model|add:'-list' %}">{% trans 'Back' %}</a></td>
+        <td class="alignright"><a href="{% url 'web:'|add:model|add:'-edit'  pk=object.id%}">{% trans 'Edit' %}</a>
+    </tr>
+    </tfoot>
+    <tbody>
+    {% for label,field in object.fields.items %}
+        {% if label != 'id' %}
+        <tr class="{% cycle 'evenrow' 'oddrow' %}">
+            <td class="text-left"><strong>{{ field.label_tag|title }}</strong></td>
+            <td class="text-right">
+                {% if field.type == "date" %}
+                    {{ field.value|date:"d-F-Y" }}
+                {% elif field.type == "file" %}
+                    <a href="{{ field.url }}"><img src="{{ STATIC_PREFIX }}web/img/binary.png"</a>
+                {% elif field.type == "object" %}
+                        <a href="{{ field.url }}">{{ field.value }}</a>
+                {% else %}
+                        {{ field.value }}
+                {% endif %}
+            </td>
+        </tr>
+        {% endif %}
+    {% endfor %}
+    </tbody>
+</table>
+{% endfor %}
+{% endblock content %}

@@ -1,0 +1,85 @@
+{% extends "core/mobile/flavor.html" %}
+{% block flavorscript %}
+  {{ block.super }}
+    function clearSubjectForm(){
+        $(':input','#id_subject')
+          .not(':button, :submit, :reset, :hidden')
+          .val('');
+    }
+    function clearSubject(){
+        $('#id_system_id').text("").show();
+        $('#id_given_name').text("").show();
+        $('#id_family_name').text("").show();
+        $('#id_dob').text("").show();
+        $('#id_gender').text("").show();
+        //$('#id_image').text("").show();
+    }
+
+    function submitEncounterTasks(subject){
+        //var subject = $('#id_patient_uuid').val()
+        var status = 1;
+        var assigned_to = $('#id_assigned_to_sa').val();
+        var system_id = $('#id_system_id').val();
+        // Initial visit - swivi operasyon - hard coded for now
+        var procedure = "5299055a-c5e6-47e7-b649-dc17dac6019b";
+        // initial follow up
+        var due_on = $('#id_date_of_first_sa_follow_up').val() + " 23:59:59";
+        postTask(assigned_to,status, due_on, subject, procedure);
+        // final follow up
+        due_on = $('#id_date_of_final_sa_follow_up').val()+" 23:59:59";
+        postTask(assigned_to,status, due_on, subject, procedure);
+  }
+
+    function submitIntake(){
+        //if(window.console){ console.log("Submitting subject"); }
+        var subject = submitSubject();
+        //if(window.console){ console.log("Submitting Encounter"); }
+        //submitEncounter(subject);
+        //if(window.console){ console.log("Submitting Tasks"); }
+        //submitEncounterTasks();
+    }
+
+{% endblock flavorscript %}
+{% block body %}
+{{ block.super }}
+<div>
+<form name="intake" id="id_intake" action="javascript:submitIntake()" method="post">
+<div id="tabs" data-role="tabs">  
+  <div>
+    <ul>
+        <li><a  href="#tabs-1" data-theme="a" data-ajax="false">Patient</a></li>
+        <li><a  href="#tabs-2" data-theme="a" data-ajax="false">Intake</a></li>
+        <li><a  href="#tabs-3" data-theme="a" data-ajax="false">Schedule</a></li>
+    </ul>
+  </div>
+  <input id="id_patient_uuid" type="hidden"/>
+  <input type="hidden" name="observer_uuid" id="id_observer_uuid" value="{{ observer.uuid }}">
+  <div id="tabs-1" class="ui-content">
+      {{ subject_form }}
+    <p align="center">
+      <input type="button" id="id_submit_subject" class="show-page-loading-msg" value="Create Patient" onClick="submitSubject()"/>
+    </p>
+  </div>
+  <br/>&nbsp;
+  <div id="tabs-2" class="ui-content"> 
+    <input id="id_encounter_uuid" type="hidden"/>
+      <input type="hidden" name="encounter_procedure_uuid" id="id_encounter_procedure_uuid" value="303a113c-6345-413f-88cb-aa6c4be3a07d"/>
+      <input type="hidden" name="encounter_concept_uuid" id="id_encounter_concept_uuid" value="266d8a8f-9178-4616-bcea-896194379059"/>
+      <input type="hidden" name="encounter_device_uuid" id="id_encounter_device_uuid" value="0725f5f5-e5b3-4d26-91d3-2d2bce40363c"/>
+        {{ encounter_form }}
+    <p align="center">
+      <input type="button" id="id_submit_encounter" class="show-page-loading-msg" value="Submit Initial Data" onClick="submitEncounter()"/>
+    </p>
+  </div>
+  <br/>&nbsp;
+  <div id="tabs-3" class="ui-content"> 
+      {{ sa_form }}
+    <p align="center">
+      <input type="button" id="id_submit_tasks" class="show-page-loading-msg" value="Submit Tasks" onClick="submitEncounterTasks()"/>
+    </p>
+  </div>
+
+</div>
+</form>
+</div>
+{% endblock %}

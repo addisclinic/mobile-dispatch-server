@@ -1,0 +1,25 @@
+This file contains a list of frequently asked questions and troubleshooting
+tips.
+
+1. Where can I get more help?
+
+See the sana-users google group or the wiki, http://sana.mit.edu/wiki. 
+
+2.  Will it work if I install it on something other than Ubuntu 12.04 LTS?
+
+Maybe but we do not officially support other Linux distro's or Ubuntu versions.
+
+3. I want to use sqlite while testing.
+
+Change the DATABASES value in the settings.py file to look like
+
+    DATABASES = {
+        'default': {
+            'NAME': '/var/local/db/sqlite.db',
+            'ENGINE': 'django.db.backends.sqlite3',
+            'USER': '',
+            'PASSWORD': ''
+        },
+    }
+
+(You will need to create the /var/local/db directory and update the perms).

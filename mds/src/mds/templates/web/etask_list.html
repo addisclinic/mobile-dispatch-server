@@ -1,0 +1,92 @@
+{% extends "web/base.html" %}
+{% block meta %}
+  {{ block.super }}
+  <meta name="flavor" value="{{ flavor }}"/>
+{% endblock meta %}
+{% block script %}
+  {% if flavor and flavor == "mobile" %}
+  {% else %}
+    {{ block.super }}
+
+  {% endif %}
+<script>
+var page=1
+function updateList(data){
+
+}
+function getTasks(start, limit){
+    
+}
+
+function showEncounter(encounter){
+  if(encounter){
+    if(encounter != "None")
+      window.open('/mds/core/mobile/encounter/'+encounter);
+    else
+      alert('No Encounter');
+  }
+}
+
+function editTask(id){
+  if(id){
+    //window.open("/mds/web/etask/" + id);
+    window.open("/mds/admin/tasks/encountertask/" + id);
+  }
+}
+
+function goToPage(value){
+ window.location = "/mds/web/etask/list/?page=" + value;
+}
+</script>
+{% endblock script %}
+{% block content %}
+<div>
+  Jump To page:
+  <select onchange="goToPage(value)"> 
+    {% for p in range %}
+      <option>{{ p }}</option>
+    {% endfor %}
+  </select>
+</div>
+<table class="tasks">
+<thead>
+<tr>
+<th>Status</th>
+<th>Patient</th>
+<th>Assigned To</th>
+<th>Due On</th>
+<th>Completed</th>
+<th>Action</th>
+</tr>
+</thead>
+{% for task in tasks %}
+  <tr>
+  <td>{{ task.status }}</td>
+  <td>{{ task.subject }}</td>
+  <td>{{ task.assigned_to }}</td>
+  {% if task.due_today %}
+    <td class="today">
+  {% else %}
+    {% if task.is_late %}
+      <td class="late">
+    {% else %}
+      <td>
+    {% endif %}
+  {% endif %}
+    {{ task.due_on }}</td>
+<td>{{ task.completed }}</td>
+<td><button type="button" onClick="javascript:editTask('{{ task.id }}')">Edit</button> <button type="button" onClick="javascript:showEncounter('{{ task.encounter }}')">View</button></td>
+</tr>
+{% endfor %}
+</table>
+<div>
+  <select onchange="goToPage(value)"> 
+    {% for p in range %}
+      <option>{{ p }}</option>
+    {% endfor %}
+  </select>
+</div>
+<script>
+
+</script>
+{% endblock content %}

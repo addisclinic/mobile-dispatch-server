@@ -1,0 +1,34 @@
+{% load i18n %}
+{% load static %}
+<nav class="sidebar jsc-sidebar" id="jsi-nav" data-sidebar-options="">
+{% if sidebar %}
+    <ul class="sidebar-list">
+        {% for item in sidebar %}
+        <li>
+            <h4>{{ item.name|title }}</h4>
+            {% if item.subitems %}
+                <ul>
+                    {% for subitem in item.subitems %}
+                    <li><a href="{{ subitem.url }}">{{ subitem.name }}</a></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+</nav>
+<script src="{{ STATIC_PREFIX }}web/js/sidebar.min.js"></script>
+<script>
+    $('#jsi-nav').sidebar({
+        trigger: '.jsc-sidebar-trigger',
+        scrollbarDisplay: true,
+        pullCb: function () { 
+            console.log('pull'); 
+        },
+        pushCb: function () { 
+            console.log('push'); 
+        }
+    });
+</script>
+

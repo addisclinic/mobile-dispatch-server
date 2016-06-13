@@ -1,0 +1,32 @@
+[
+    {
+        "pk": 1,
+        "model": "core.device",
+        "fields": {
+            "name": "9999999999",
+            "uuid": "36808bde-aacc-405c-a391-fef52485deb1",
+            "modified": "2014-01-16 11:32:46",
+            "created": "2013-04-26 17:09:50"
+        }
+    },
+    {
+        "pk": 2,
+        "model": "core.device",
+        "fields": {
+            "name": "9990009999",
+            "uuid": "ed228418-6cc3-4f47-b2cb-491b9f764281",
+            "modified": "2013-04-26 17:24:24",
+            "created": "2013-04-26 17:24:24"
+        }
+    },
+    {
+        "pk": 3,
+        "model": "core.device",
+        "fields": {
+            "name": "5555555555",
+            "uuid": "b63eeefd-e217-40e7-a30a-68db4a930467",
+            "modified": "2013-12-24 14:46:39",
+            "created": "2013-12-24 14:46:39"
+        }
+    }
+]

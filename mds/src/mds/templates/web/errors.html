@@ -1,0 +1,12 @@
+<div id="id_errors">
+{% block errors %}
+    {% if errors %}
+    <h3>Errors</h3>
+      <ul>
+        {% for x in errors %}
+          <li class="errors">{{ x }}</li>
+        {% endfor %}
+     </ul>
+  {% endif %}
+{% endblock %}
+</div>

@@ -1,0 +1,33 @@
+{% extends "core/mobile/base.html" %}
+{% block style %}
+  {{ block.super }}
+  <!--
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css" >
+  -->
+{% endblock style %}
+
+{% block script %}
+{{ block.super }}
+   <script src="{{ STATIC_PREFIX }}js/jquery.mobile-1.4.0.min.js"></script>
+{% endblock script %}
+
+{% block flavorscript %}
+  {{ block.super }}
+  $(function() {
+     $( "select[multiple='multiple']").selectable();
+     $( "select[multiple='multiple']").on("selectablestart", function (event, ui) {
+        event.originalEvent.ctrlKey = true;
+    });
+
+  });
+{% endblock flavorscript %}
+
+{% block flavorfooter %}
+{{ block.super }}
+  <ul>
+    <li><a href="/test/mds/core/intake/?flavor=mobile">Registration</a></li>
+    <li><a href="/test/mds/core/mobile/encounter/">Encounter List</a></li>
+    <li><a href="/test/mds/admin">Admin</a></li>
+  </ul>
+{% endblock flavorfooter %}
+

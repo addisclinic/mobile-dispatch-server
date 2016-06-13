@@ -1,0 +1,165 @@
+{% extends "web/base.html" %}
+{% block meta %}
+  {{ block.super }}
+  <meta name="flavor" value="{{ flavor }}"/>
+{% endblock meta %}
+
+{% block script %}
+{% if flavor and flavor == "mobile" %}
+
+{% else %}
+  {{ block.super }}
+{% endif %}
+<script>
+    var pending = 0;
+    function postSuccess(data){
+        if(data){
+            var msg = data['message'];
+            var encounter = msg['uuid'];
+            stdout("postSuccess()","SUCCESS creating encounter" + msg['uuid']); 
+            
+            alert("Success Entering Initial Encounter Data:\n " + msg['uuid']);
+            $('#id_encounter').val(msg['uuid']);
+            setPending(5);
+            postObservationsWeb(encounter);
+        } else {
+            stdout("postSuccess()","No data");
+        }
+    }
+
+    function setPending(value){
+        pending = 5;
+    }
+    
+    function decrementPending(){
+        pending = pending -1;
+    }
+
+    function incrementPending(){
+        pending = pending +1;
+    }
+
+    function postSuccessObs(data){
+        decrementPending();
+        if(pending == 0){
+            if($('#id_new_tasks').is(":checked")){
+                var subject = $('#id_subject').val();
+                $.cookie("subject",subject,{'path':'/'});
+                $.cookie("new_patient",true,{'path':'/'});
+                window.location = $('#id_task_nav').attr('href');
+                //$('#id_task_nav').click();
+            }
+        }
+    }
+
+    function postFail(errors){
+       alert("Failure creating encounter.");
+    }
+
+    // Pulls the values from the form and makes the post call
+    function submitEncounterWeb(){
+        
+        var url = '/mds/core/encounter/';
+        var form = $('#id_form');
+
+        var subject = $('#id_subject').val();
+        var observer = $('#id_observer').val();
+        var concept = $('#id_concept').val();
+        var procedure = $('#id_procedure').val();
+        var device = $('#id_device').val();
+
+        if(window.console){ console.log("posting: ( " + subject+", "
+                + observer+", "+procedure+", "+concept+", "+ device +" )"); }
+
+        var encounterCreated = false;
+        
+        var data = {
+                    subject: subject,
+                    procedure: procedure,
+                    observer: observer,
+                    device: device,
+                    concept: concept
+                };
+        var headers = {
+            "sessionid":$.cookie("sessionid"),
+            'csrftoken':$.cookie("csrftoken")
+        };
+        postAjaxWithHeaders(url,data,headers,postSuccess, postFail);
+    }
+       
+    function postObservationsWeb(encounter){   
+        // Initial diagnosis
+        var value = $('#id_diagnosis').val();
+        if (value == "Other"){    
+            value = $('#id_diagnosis_other').val();
+        }
+        postObs(encounter, '1', '104889a3-b6fa-4cdc-b232-d3b73e924cd1', value, postSuccessObs);
+        // Operation(s)
+        var value = $('#id_operation').val();
+        var operations_other = $('#id_operations_other').val() || [];
+        if(operations_other != null){
+             value.push(operations_other);
+        }
+        postObs(encounter, '2', '9b01ef00-9fac-4f3c-87e5-66b152a3159b', value.join(","), postSuccessObs);
+        // Operation date
+        value= $('#id_date_of_operation').val();
+        postObs(encounter, '3', '9082b5f8-74c6-4f54-a92b-04fa98e780d6', value, postSuccessObs);
+        
+        // Dicharge date
+        value = $('#id_date_of_discharge').val();
+        postObs(encounter, '4', '069ba5bb-a183-4d14-b485-9f93bca812c3', value, postSuccessObs);
+        
+        // Follow up date
+        value = $('#id_date_of_regular_follow_up').val();
+        $.cookie("regular_follow_up",value,{'path':'/'});
+        postObs(encounter, '5', 'd24cf683-4b51-46d8-a4c4-154c38e1dd38', value, postSuccessObs);
+    }
+    
+</script>
+{% endblock script %}
+    {% block flavorscript %}
+      $(function(){
+      //$( "input[type='date']" ).datepicker({ dateFormat: 'mm/dd/yy', changeYear: true });
+        $('input[type="date"]').datepicker({ dateFormat: 'yy-mm-dd', changeYear: true , yearRange : "c-100:c+05"}).prop('type','text');
+        $('input[type="date"]').prop('type','text');
+    });
+    // Workaround for safari issues
+    $(function() {
+      $( "select[multiple='multiple']").selectable();
+      $( "select[multiple='multiple']").on("selectablestart", function (event, ui) {
+        event.originalEvent.ctrlKey = true;
+      });
+    });
+
+    {% endblock flavorscript %}
+
+{% block content %}
+<form name="intake" id="id_form" action="javascript:submitEncounterWeb()" method="post">
+  {% if flavor and flavor == "mobile" %}
+    {{ form }}
+  {% else %}
+    {{ form.as_p }}
+  {% endif %}
+    <input type="checkbox" name="new_tasks" id="id_new_tasks" value="true">Create default tasks</input>
+  <p align="center" style="font-size:larger">
+    <input type="button" id="id_submit" class="show-page-loading-msg" value="Submit" onClick="submitEncounterWeb()">
+  </p>
+
+</form>
+<div id="id_messages">
+</div>
+<script>
+  var subject = null;
+  $(function(){
+    var subject = $.cookie("subject");
+    if(subject){
+        $('#id_subject').val(subject);
+    }
+    $('#id_new_tasks').bind('click',function() {
+        if($(this).is(':checked')) {
+            $('#id_messages').html($(this).val());
+         }
+   });
+  });
+</script>
+{% endblock content %}

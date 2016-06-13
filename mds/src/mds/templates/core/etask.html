@@ -1,0 +1,16 @@
+{% extends "core/base.html" %}
+{% block script %}
+{{ if flavor=='mobile' }}
+
+
+{{ else }}
+
+
+{{ endif }}
+{% endblock script %}
+<div id="tabs-3" class="ui-content"> 
+  {{ sa_form.as_p }}
+  <p align="center" style="font-size:larger">
+    <input type="button" id="id_submit_intake" class="show-page-loading-msg" value="Submit Tasks" onClick="submitEncounterTask()">
+  </p>
+</div>

@@ -1,0 +1,13 @@
+{% extends "web/base.html" %}
+{% block script %}
+  {{ block.super }}
+  <script>
+    //setMode("verbose");
+  </script>
+{% endblock %}
+{% block title %}{{ portal.name|title }}{% endblock title %}
+{% load i18n %}
+{% block header %}{{ portal.name|title }}{% endblock header %}
+{% block content %}
+{% trans "Welcome to the MDS web portal" %}
+{% endblock content %}
